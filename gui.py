@@ -36,3 +36,32 @@ def gui_process(config, to_network, from_network):
     layout.addLayout(input_layout)
 
     window.setLayout(layout)
+    def append_message(text, color="#d4d4d4"):
+        chatbox.setTextColor(QColor(color))
+        chatbox.append(f"{ts()} {text}")
+        chatbox.moveCursor(QTextCursor.End)
+
+    def send_msg():
+        msg = entry.text().strip()
+        if msg:
+            to_network.put(msg)
+            entry.clear()
+
+    def poll_messages():
+        while not from_network.empty():
+            text = from_network.get()
+            if text == "EXIT":
+                window.close()
+                return
+            color = "#d4d4d4"
+            if f"[{handle}]" in text:
+                color = "#4fc1ff"
+            elif text.startswith("["):
+                color = "#9cdcfe"
+            if "hat den Chat verlassen" in text:
+                color = "#c586c0"
+            elif "Fehler" in text:
+                color = "#ff6b6b"
+            elif "Bild" in text:
+                color = "#fce94f"
+            append_message(text, color=color)
