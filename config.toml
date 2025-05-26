@@ -1,0 +1,20 @@
+[[clients]]
+handle = "Alice"
+port = 5000
+whoisport = 4000
+autoreply = "Ich bin gerade nicht da."
+imagepath = "./images/alice"
+
+[[clients]]
+handle = "Bob"
+port = 5001
+whoisport = 4000
+autoreply = "Bin AFK."
+imagepath = "./images/bob"
+
+[[clients]]
+handle = "Jalal"
+port = 5002
+whoisport = 4000
+autoreply = "Bin nicht da."
+imagepath = "./images/jalal"
