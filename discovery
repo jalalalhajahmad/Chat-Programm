@@ -12,6 +12,11 @@ def discovery_process(config, to_ui=None):
     }
 
     def listen():
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        sock.bind(('', port))
+        print(f"[Discovery] Listening on UDP {port}")
         while True:
             try:
                 data, addr = sock.recvfrom(1024)
@@ -32,3 +37,6 @@ def discovery_process(config, to_ui=None):
                         pass
             except:
                 pass
+    thread = threading.Thread(target=listen, daemon=True)
+    thread.start()
+    thread.join()
