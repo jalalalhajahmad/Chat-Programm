@@ -50,6 +50,9 @@ def discovery_process(config, to_ui=None):
                         pass
             except:
                 pass
+    thread = threading.Thread(target=listen, daemon=True)
+    thread.start()
+    thread.join()
 
     thread = threading.Thread(target=listen, daemon=True)
     thread.start()
