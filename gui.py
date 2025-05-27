@@ -36,6 +36,7 @@ def gui_process(config, to_network, from_network):
     layout.addLayout(input_layout)
 
     window.setLayout(layout)
+
     def append_message(text, color="#d4d4d4"):
         chatbox.setTextColor(QColor(color))
         chatbox.append(f"{ts()} {text}")
@@ -50,7 +51,7 @@ def gui_process(config, to_network, from_network):
     def poll_messages():
         while not from_network.empty():
             text = from_network.get()
-            if text == "EXIT":
+            if text == "__EXIT__":
                 window.close()
                 return
             color = "#d4d4d4"
@@ -65,3 +66,15 @@ def gui_process(config, to_network, from_network):
             elif "Bild" in text:
                 color = "#fce94f"
             append_message(text, color=color)
+
+    send_button.clicked.connect(send_msg)
+    entry.returnPressed.connect(send_msg)
+
+    timer = QTimer()
+    timer.timeout.connect(poll_messages)
+    timer.start(500)
+
+    append_message(f"Willkommen, {handle}!", color="#ffffff")
+
+    window.show()
+    sys.exit(app.exec_())
