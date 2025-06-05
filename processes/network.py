@@ -1,11 +1,31 @@
-import socket
-import threading
-import os
-import time
-from datetime import datetime
+import socket, os, time, threading
 
-def ts():
-    return datetime.now().strftime("[%H:%M:%S]")
+DISCOVERY_PORT = None
+MAX_UDP_SIZE = 65507
+
+def send_image_via_tcp(config, dest_handle, filepath, peer_ip, peer_port):
+    handle    = config["handle"]
+    img_path  = config["imagepath"]
+    data = open(filepath, "rb").read()
+    size = len(data)
+
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(("", 0))
+    server.listen(1)
+    tcp_port = server.getsockname()[1]
+
+    udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp.sendto(f"IMG {handle} {dest_handle} {tcp_port} {size}".encode("utf-8"),
+               (peer_ip, peer_port))
+    udp.close()
+
+    def serve():
+        conn,  = server.accept()
+        conn.sendall(data)
+        conn.close()
+        server.close()
+
+    threading.Thread(target=_serve, daemon=True).start()
 
 def network_process(config, from_ui, to_ui):
     handle = config['handle']
