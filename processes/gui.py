@@ -64,6 +64,43 @@ def gui_process(config, to_network, from_network):
         chat.append(f"{ts()} {text}")
         chat.moveCursor(QTextCursor.End)
 
+    def send_message():
+        dest = dest_input.text().strip()
+        msg  = msg_input.text().strip()
+        if not dest or not msg:
+            return
+        append(f"{handle}: {msg}", "#000000")
+        to_network.send(("MSG", dest, msg))
+        msg_input.clear()
+
+    def sendimage():
+        path,  = QFileDialog.getOpenFileName(wnd, "Bild auswählen", "", "Images (.png.jpg *.bmp)")
+        if not path:
+            return
+        dest = dest_input.text().strip()
+        if not dest:
+            QMessageBox.warning(wnd, "Fehler", "Bitte Empfänger-Handle eingeben!")
+            return
+        append(f"{handle} → {dest} [Bild]", "#f2aeae")
+        to_network.send(("IMG", dest, path))
+
+    def show_clients():
+        peers = [(h, ip, pt) for (h, ip, pt) in config['peers'] if h != handle]
+        if not peers:
+            QMessageBox.information(wnd, "Clients", "Keine anderen Clients gefunden.")
+        else:
+            try:
+                local_ip = socket.gethostbyname(socket.gethostname())
+            except Exception:
+                local_ip = "unbekannt"
+            local_port = config["port"][0]
+            info = "\n".join(f"{h} ({ip}:{pt})" for (h, ip, pt) in peers)
+            QMessageBox.information(
+                wnd,
+                "Clients",
+                f"Du selbst: {handle} ({local_ip}:{local_port})\n\n Aktive Clients:\n{info}"
+            )
+
     def pollnetwork():
         current = {h for (h, , _) in config['peers'] if h != handle}
         newcomers = current - local_peers
