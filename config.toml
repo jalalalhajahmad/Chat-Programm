@@ -1,20 +1,23 @@
 [[clients]]
-handle = "Alice"
-port = 5000
+handle    = "Alice"
+port      = [5000, 6000]
 whoisport = 4000
 autoreply = "Ich bin gerade nicht da."
+away      = false
 imagepath = "./images/alice"
 
 [[clients]]
-handle = "Bob"
-port = 5001
+handle    = "Bob"
+port      = [5001, 6000]
 whoisport = 4000
 autoreply = "Bin AFK."
+away      = false
 imagepath = "./images/bob"
 
 [[clients]]
-handle = "Jalal"
-port = 5002
+handle    = "Jalal"
+port      = [5002, 6000]
 whoisport = 4000
-autoreply = "Bin nicht da."
+autoreply = "Bin unterwegs."
+away      = false
 imagepath = "./images/jalal"
