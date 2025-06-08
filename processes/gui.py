@@ -5,7 +5,7 @@ import platform
 import socket
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QTextEdit, QVBoxLayout, QHBoxLayout,
-    QLineEdit, QPushButton, QFileDialog, QMessageBox
+    QLineEdit, QPushButton, QFileDialog, QMessageBox, QInputDialog
 )
 from PyQt5.QtCore    import QTimer
 from PyQt5.QtGui     import QTextCursor, QColor
@@ -73,8 +73,8 @@ def gui_process(config, to_network, from_network):
         to_network.send(("MSG", dest, msg))
         msg_input.clear()
 
-    def sendimage():
-        path,  = QFileDialog.getOpenFileName(wnd, "Bild auswählen", "", "Images (.png.jpg *.bmp)")
+    def send_image():
+        path, _ = QFileDialog.getOpenFileName(wnd, "Bild auswählen", "", "Images (*.png *.jpg *.bmp)")
         if not path:
             return
         dest = dest_input.text().strip()
@@ -98,14 +98,40 @@ def gui_process(config, to_network, from_network):
             QMessageBox.information(
                 wnd,
                 "Clients",
-                f"Du selbst: {handle} ({local_ip}:{local_port})\n\n Aktive Clients:\n{info}"
+                f"Du selbst: {handle} ({local_ip}:{local_port})\n\n🌐 Aktive Clients:\n{info}"
             )
 
-    def pollnetwork():
-        current = {h for (h, , _) in config['peers'] if h != handle}
+    def leave_chat():
+        to_network.send(("LEAVE", handle, ""))
+        wnd.close()
+
+    def toggle_afk():
+        nonlocal afk_mode
+        if btn_afk.isChecked():
+            btn_afk.setText("Abwesend: EIN")
+            btn_afk.setStyleSheet("background-color: #cc5500; color: white;")
+            afk_mode = True
+            to_network.send(("AFK", handle, "ON"))
+            append("[System] Abwesenheitsmodus aktiviert", "#c22809")
+        else:
+            btn_afk.setText("Abwesend: AUS")
+            btn_afk.setStyleSheet("background-color: #666; color: white;")
+            afk_mode = False
+            to_network.send(("AFK", handle, "OFF"))
+            append("[System] Abwesenheitsmodus deaktiviert", "#31c209")
+
+    btn_send.clicked.connect(send_message)
+    msg_input.returnPressed.connect(send_message)
+    btn_img.clicked.connect(send_image)
+    btn_clients.clicked.connect(show_clients)
+    btn_leave.clicked.connect(leave_chat)
+    btn_afk.clicked.connect(toggle_afk)
+
+    def poll_network():
+        current = {h for (h, _, _) in config['peers'] if h != handle}
         newcomers = current - local_peers
         for h in sorted(newcomers):
-            append(f"{h} hat den Chat betreten.", "#068218")
+            append(f"⚡ {h} hat den Chat betreten.", "#068218")
         local_peers.update(newcomers)
 
         while from_network.poll():
@@ -116,15 +142,15 @@ def gui_process(config, to_network, from_network):
                 append(f"{src} hat Bild → {payload}", "#f2aeae")
                 open_file(payload)
             elif typ == 'LEAVE':
-                append(f"{src} hat den Chat verlassen.", "#ed2700")
+                append(f"⚠️ {src} hat den Chat verlassen.", "#ed2700")
                 if src in local_peers:
                     local_peers.remove(src)
                 config['peers'][:] = [p for p in config['peers'] if p[0] != src]
 
     timer = QTimer()
-    timer.timeout.connect(pollnetwork)
+    timer.timeout.connect(poll_network)
     timer.start(200)
 
-    append(f"Willkommen, {handle}!", "#3e6948")
+    append(f"👋 Willkommen, {handle}!", "#3e6948")
     wnd.show()
-    app.exec() 
+    app.exec_()
