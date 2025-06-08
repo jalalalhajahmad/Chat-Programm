@@ -13,7 +13,7 @@ def discovery_process(config):
     try:
         sock.bind(("", whoisport))
     except OSError as e:
-        print(f"[Discovery] ⚠️ Port {whoisport} belegt: {e}")
+        print(f"[Discovery] Port {whoisport} belegt: {e}")
         return
     sock.settimeout(1.0)
 
@@ -25,7 +25,7 @@ def discovery_process(config):
         broadcast(f"JOIN {handle} {port}")
         broadcast("WHO")
 
-        # Antworten empfangen
+        # Antworten verarbeiten
         start = time.time()
         while time.time() - start < 1.0:
             try:
@@ -44,4 +44,34 @@ def discovery_process(config):
             parts = text.split()
             cmd = parts[0]
 
-            time.sleep(3)
+            if cmd == "JOIN" and len(parts) == 3:
+                peer, pport = parts[1], int(parts[2])
+                entry = (peer, addr[0], pport)
+                if peer != handle and entry not in peers:
+                    peers.append(entry)
+                    print(f"[Discovery] Neue Peer erkannt: {entry}")
+
+            elif cmd == "LEAVE" and len(parts) == 2:
+                peer = parts[1]
+                peers[:] = [p for p in peers if p[0] != peer]
+
+            elif cmd == "WHO":
+                # Sende alle bekannten Nutzer zurück
+                all_known = [(handle, socket.gethostbyname(socket.gethostname()), port)] + list(peers)
+                payload = ",".join(f"{h} {ip} {pt}" for h, ip, pt in all_known)
+                sock.sendto(f"KNOWUSERS {payload}".encode("utf-8"), addr)
+
+            elif cmd == "KNOWUSERS":
+                rest = text[len("KNOWUSERS "):]
+                for chunk in rest.split(','):
+                    if not chunk.strip():
+                        continue
+                    try:
+                        h, ip, pt = chunk.strip().split()
+                        entry = (h, ip, int(pt))
+                        if h != handle and entry not in peers:
+                            peers.append(entry)
+                    except ValueError:
+                        continue
+
+        time.sleep(3)
