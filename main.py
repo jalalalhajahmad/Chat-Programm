@@ -1,43 +1,49 @@
+import sys
 import toml
 import multiprocessing
-import sys
+import socket
 from processes.discovery import discovery_process
-from processes.network import network_process
-from processes.gui import gui_process as ui_process
+from processes.network   import network_process
+from processes.gui       import gui_process
 
 def main():
-    if len(sys.argv) < 2:
-        print("Verwendung: python main.py <Handle>")
+    cfg_all = toml.load("config.toml")
+    clients = cfg_all.get("clients", [])
+    if not clients:
+        print("Keine [[clients]] in config.toml.")
         sys.exit(1)
 
-    handle = sys.argv[1]
-    config_file = 'config.toml'
+    if len(sys.argv) != 2:
+        handles = [c["handle"] for c in clients]
+        print("Verwendung: python main.py <Handle>")
+        print("Verfügbare Handles:", ", ".join(handles))
+        sys.exit(1)
 
-    with open(config_file, 'r') as f:
-        all_clients = toml.load(f)['clients']
-        match = [c for c in all_clients if c['handle'] == handle]
+    chosen = sys.argv[1]
+    client_conf = next((c for c in clients if c["handle"] == chosen), None)
+    if client_conf is None:
+        print(f"Handle '{chosen}' nicht gefunden.")
+        sys.exit(1)
 
-        if not match:
-            print(f"Kein Eintrag für Handle '{handle}' in config.toml gefunden.")
-            sys.exit(1)
+    config = client_conf
+    manager = multiprocessing.Manager()
+    config["peers"] = manager.list()
 
-        config = match[0]
+    ui2net_p, ui2net_c = multiprocessing.Pipe()
+    net2ui_p, net2ui_c = multiprocessing.Pipe()
 
-    ipc_ui_to_net = multiprocessing.Queue()
-    ipc_net_to_ui = multiprocessing.Queue()
+    p_net  = multiprocessing.Process(target=network_process, args=(config, ui2net_c, net2ui_p))
+    p_gui  = multiprocessing.Process(target=gui_process,       args=(config, ui2net_p, net2ui_c))
 
-    discovery_proc = multiprocessing.Process(target=discovery_process, args=(config, ipc_net_to_ui))
-    network_proc = multiprocessing.Process(target=network_process, args=(config, ipc_ui_to_net, ipc_net_to_ui))
+    p_net.start()
+    p_gui.start()
 
-    discovery_proc.start()
-    network_proc.start()
+    # GUI läuft im Vordergrund
+    p_gui.join()
 
-    ui_process(config, ipc_ui_to_net, ipc_net_to_ui)
-
-    discovery_proc.terminate()
-    network_proc.terminate()
-    discovery_proc.join()
-    network_proc.join()
+    # Prozesse korrekt beenden
+    p_net.terminate()
+    p_net.join()
 
 if __name__ == "__main__":
- main()
+    main()
