@@ -134,9 +134,6 @@ def network_process(config, ui2net, net2ui):
         parts = text.split()
         cmd = parts[0]
 
-        if cmd != "KNOWUSERS":
-            print(f"[RECV] Raw: {text}")
-
         # Handle incoming chat message
         if cmd == "MSG" and len(parts) >= 4:
             src, dest = parts[1], parts[2]
