@@ -77,10 +77,11 @@ def main():
     p_net = multiprocessing.Process(target=network_process, args=(config, ui2net_c, net2ui_p))
     p_net.start()
 
+    stop_event = threading.Event()
     left_peers = set()
 
     def poll_network():
-        while True:
+        while not stop_event.is_set():
             while net2ui_c.poll():
                 typ, src, payload = net2ui_c.recv()
                 if typ == 'MSG':
@@ -155,12 +156,16 @@ def main():
             time.sleep(0.05)
 
     finally:
+        stop_event.set()
+        time.sleep(0.1)
+
         if p_disc:
-            disc_ctrl_parent.send("STOP")
-            p_disc.join()
+         disc_ctrl_parent.send("STOP")
+         p_disc.join()
 
         ui2net_p.send(("EXIT", "", ""))
         p_net.join()
+
 
 if __name__ == "__main__":
     main()
