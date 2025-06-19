@@ -3,12 +3,12 @@ import os
 import subprocess
 import platform
 import socket
-import toml  
+import toml
 import qdarkstyle
-from PyQt5.QtWidgets import ( 
+from PyQt5.QtWidgets import (
     QApplication, QWidget, QTextEdit, QVBoxLayout, QHBoxLayout,
-    QLineEdit, QPushButton, QFileDialog, QMessageBox, QInputDialog,
-    QDialog, QFormLayout, QLabel
+    QLineEdit, QPushButton, QFileDialog, QMessageBox,
+    QDialog, QFormLayout
 )
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCursor, QColor
@@ -16,7 +16,7 @@ from PyQt5.QtGui import QTextCursor, QColor
 MAX_DISPLAY_CHUNK = 200
 CONFIG_FILE = "config.toml"
 
-# Timestamp-Function
+# Timestamp
 def ts():
     from datetime import datetime
     return datetime.now().strftime("[%H:%M:%S]")
@@ -30,7 +30,7 @@ def open_file(path):
     else:
         subprocess.Popen(['xdg-open', path])
 
-# Get the local IP
+# Get local IP
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -41,12 +41,7 @@ def get_local_ip():
     finally:
         s.close()
 
-# save config
-def save_config(config, path=CONFIG_FILE):
-    with open(path, "w") as f:
-        toml.dump({"clients": [config]}, f)
-
-# Settingsdialog
+# Settings dialog
 class SettingsDialog(QDialog):
     def __init__(self, config, parent=None):
         super().__init__(parent)
@@ -68,21 +63,21 @@ class SettingsDialog(QDialog):
         layout.addWidget(save_btn)
 
         self.config = config
-    
+
     def save(self):
-       try:
-            self.config["handle"]     = self.handle_field.text()
-            self.config["port"][0]    = int(self.port_field.text())
-            self.config["autoreply"]  = self.autoreply_field.text()
-            self.config["imagepath"]  = self.imagepath_field.text()
+        try:
+            self.config["handle"] = self.handle_field.text()
+            self.config["port"][0] = int(self.port_field.text())
+            self.config["autoreply"] = self.autoreply_field.text()
+            self.config["imagepath"] = self.imagepath_field.text()
             os.makedirs(self.config["imagepath"], exist_ok=True)
 
             all_cfg = self.config["__cfg_all"]
-            index   = self.config["__cfg_index"]
+            index = self.config["__cfg_index"]
 
             clean_config = {
-            k: v for k, v in self.config.items()
-            if k not in ("peers", "__cfg_all", "__cfg_index")
+                k: v for k, v in self.config.items()
+                if k not in ("peers", "__cfg_all", "__cfg_index")
             }
 
             all_cfg["clients"][index] = clean_config
@@ -92,15 +87,12 @@ class SettingsDialog(QDialog):
             QMessageBox.information(self, "Saved", "Configuration saved. Please restart the program.")
             self.accept()
 
-       except Exception as e:
-           QMessageBox.warning(self, "Error", f"Invalid input: {e}")
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"Invalid input: {e}")
 
- 
-
-# GUI-Hauptprocess
-
+# GUI Hauptprocess
 def gui_process(config, to_network, from_network):
-    handle   = config['handle']
+    handle = config['handle']
     img_path = config['imagepath']
     os.makedirs(img_path, exist_ok=True)
 
@@ -122,7 +114,7 @@ def gui_process(config, to_network, from_network):
     btn_afk = QPushButton("AFK: OFF"); btn_afk.setCheckable(True)
     btn_afk.setStyleSheet("background-color: #666; color: white;")
     btn_dark = QPushButton("Dark Mode"); btn_dark.setCheckable(True)
-    btn_settings = QPushButton("Settings")  # New Button added
+    btn_settings = QPushButton("Settings")
 
     for w in (dest_input, msg_input, btn_send, btn_img, btn_clients, btn_settings, btn_leave, btn_afk, btn_dark):
         controls.addWidget(w)
@@ -133,8 +125,6 @@ def gui_process(config, to_network, from_network):
     afk_mode = False
 
     def append(text, color="#010202"):
-        if isinstance(text, str) and len(text) > MAX_DISPLAY_CHUNK:
-            text = text[:MAX_DISPLAY_CHUNK] + '...'
         chat.setTextColor(QColor(color))
         chat.append(f"{ts()} {text}")
         chat.moveCursor(QTextCursor.End)
@@ -149,7 +139,7 @@ def gui_process(config, to_network, from_network):
         msg_input.clear()
 
     def send_image():
-        path, _ = QFileDialog.getOpenFileName(wnd, "Select image", "", "Images (*.png *.jpg *.bmp)")
+        path, _ = QFileDialog.getOpenFileName(wnd, "Select image", "", "Images (*.png *.jpg *.bmp *.webp)")
         if not path:
             return
         dest = dest_input.text().strip()
@@ -164,15 +154,19 @@ def gui_process(config, to_network, from_network):
         if not peers:
             QMessageBox.information(wnd, "Clients", "No other clients found.")
         else:
-            try:
-                local_ip = get_local_ip()
-            except Exception:
-                local_ip = "unknown"
+            local_ip = get_local_ip()
             local_port = config["port"][0]
             info = "\n".join(f"{h} ({ip}:{pt})" for (h, ip, pt) in peers)
-            QMessageBox.information(wnd, "Clients", f"You: {handle} ({local_ip}:{local_port})\n\n Active clients:\n{info}")
+            QMessageBox.information(wnd, "Clients", f"You: {handle} ({local_ip}:{local_port})\n\nActive clients:\n{info}")
+    already_closing = False 
+    
 
     def leave_chat():
+        nonlocal already_closing
+        if already_closing:
+            return
+        already_closing = True
+        to_network.send(("LEAVE", handle, ""))
         to_network.send(("EXIT", "", ""))
         wnd.close()
 
@@ -212,6 +206,8 @@ def gui_process(config, to_network, from_network):
     btn_afk.clicked.connect(toggle_afk)
     btn_dark.clicked.connect(toggle_dark)
     btn_settings.clicked.connect(open_settings)
+    
+    already_left = set()
 
     def poll_network():
         current = {h for (h, _, _) in config['peers'] if h != handle}
@@ -228,15 +224,29 @@ def gui_process(config, to_network, from_network):
                 append(f"{src} sent image → {payload}", "#204EB4")
                 open_file(payload)
             elif typ == 'LEAVE':
+                if src in already_left:
+                   return
+                already_left.add(src)
                 append(f"⚠️ {src} left the chat.", "#D60C0C")
                 if src in local_peers:
-                    local_peers.remove(src)
+                   local_peers.remove(src)
                 config['peers'][:] = [p for p in config['peers'] if p[0] != src]
 
-    timer = QTimer()
-    timer.timeout.connect(poll_network)
-    timer.start(200)
 
     append(f"👋 Welcome, {handle}!", "#000000")
+
+    def on_close_event(event):
+        nonlocal already_closing
+        if not already_closing:
+            to_network.send(("LEAVE", handle, ""))
+            to_network.send(("EXIT", "", ""))
+        already_closing = True
+        event.accept()
+
+    
+    timer = QTimer()
+    timer.timeout.connect(poll_network)
+    timer.start(50)
+
     wnd.show()
     app.exec_()

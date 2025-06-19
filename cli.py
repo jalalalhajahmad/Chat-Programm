@@ -29,6 +29,14 @@ def port_in_use(port):
         except OSError:
             return True
 
+def print_commands():
+    print("\nAvailable commands:")
+    print("  msg <handle> <text>")
+    print("  img <handle> <path_to_image>")
+    print("  clients")
+    print("  afk on|off")
+    print("  leave\n")
+
 def main():
     cfg_all = toml.load(CONFIG_FILE)
     clients = cfg_all.get("clients", [])
@@ -87,3 +95,72 @@ def main():
             time.sleep(0.05)
 
     threading.Thread(target=poll_network, daemon=True).start()
+
+    print(f"\n========== SLCP CLI Chat started as '{chosen}' ==========")
+    print_commands()
+
+    try:
+        while True:
+            cmd = input("> ").strip()
+            if not cmd:
+                continue
+
+            parts = cmd.split(" ", 2)
+            action = parts[0].lower()
+
+            if action == "leave":
+                print("Sending LEAVE...")
+                ui2net_p.send(("LEAVE", "", ""))
+                break
+
+            elif action == "clients":
+                peers = [(h, ip, pt) for (h, ip, pt) in config['peers'] if h != chosen]
+                if not peers:
+                    print("No other clients found.")
+                else:
+                    print("\nActive clients:")
+                    for (h, ip, pt) in peers:
+                        print(f"  {h} ({ip}:{pt})")
+                    print()
+
+            elif action == "msg" and len(parts) >= 3:
+                dest = parts[1]
+                msg = parts[2]
+                ui2net_p.send(("MSG", dest, msg))
+                print(f"[SEND] to {dest}: {msg}")
+
+            elif action == "img" and len(parts) >= 3:
+                dest = parts[1]
+                path = parts[2]
+                if not os.path.isfile(path):
+                    print(f"[ERROR] File not found: {path}")
+                    continue
+                ui2net_p.send(("IMG", dest, path))
+                print(f"[SEND IMG] to {dest}: {path}")
+
+            elif action == "afk" and len(parts) == 2:
+                mode = parts[1].lower()
+                if mode in ("on", "off"):
+                    ui2net_p.send(("AFK", chosen, mode.upper()))
+                    print(f"[AFK] set to {mode.upper()}")
+                else:
+                    print("[ERROR] Usage: afk on|off")
+
+            elif action == "help":
+                print_commands()
+
+            else:
+                print("[ERROR] Unknown command. Type 'help' for commands.")
+
+            time.sleep(0.05)
+
+    finally:
+        if p_disc:
+            disc_ctrl_parent.send("STOP")
+            p_disc.join()
+
+        ui2net_p.send(("EXIT", "", ""))
+        p_net.join()
+
+if __name__ == "__main__":
+    main()
