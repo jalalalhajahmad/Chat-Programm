@@ -111,7 +111,20 @@ def main():
 
             if action == "leave":
                 print("Sending LEAVE...")
+                
                 ui2net_p.send(("LEAVE", "", ""))
+
+                if p_disc:
+                    disc_ctrl_parent.send("STOP")
+                    p_disc.join()
+                    print("[INFO] Discovery stopped.")
+
+                ui2net_p.send(("EXIT", "", ""))
+                p_net.join()
+
+                stop_event.set()
+                time.sleep(0.1)
+
                 break
 
             elif action == "clients":
@@ -160,8 +173,8 @@ def main():
         time.sleep(0.1)
 
         if p_disc:
-         disc_ctrl_parent.send("STOP")
-         p_disc.join()
+            disc_ctrl_parent.send("STOP")
+            p_disc.join()
 
         ui2net_p.send(("EXIT", "", ""))
         p_net.join()
