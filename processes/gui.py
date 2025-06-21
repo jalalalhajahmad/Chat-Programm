@@ -1,3 +1,27 @@
+##
+# @file gui.py
+# @brief Graphical User Interface (GUI) for SLCP Chat.
+#
+# This module provides a complete graphical frontend for the SLCP (Simple LAN Chat Protocol) client.
+# It allows users to send and receive messages and images, manage peer visibility, toggle AFK (away-from-keyboard) mode,
+# access configuration settings, and quit the session gracefully.
+#
+# Communication with the network and discovery processes is handled via multiprocessing pipes.
+# Built using PyQt5 and styled optionally using QDarkStyle.
+#
+# Key GUI Features:
+# - Display chat log with timestamps and color-coded messages
+# - Input fields for recipient and message
+# - Send image button (opens file dialog)
+# - View active clients
+# - AFK mode toggle with autoreply functionality
+# - Dark mode toggle
+# - In-app configuration management
+#
+# @author SLCP Team
+# @date June 2025
+#
+
 import sys
 import os
 import subprocess
@@ -13,15 +37,19 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCursor, QColor
 
-MAX_DISPLAY_CHUNK = 200
-CONFIG_FILE = "config.toml"
+MAX_DISPLAY_CHUNK = 200  # Max characters per chat display chunk
+CONFIG_FILE = "config.toml"  # Default path to config file
 
-# Timestamp
+##
+# @brief Generate a timestamp string for message labeling.
+# @return Timestamp in the format [HH:MM:SS]
 def ts():
     from datetime import datetime
     return datetime.now().strftime("[%H:%M:%S]")
 
-# Open file
+##
+# @brief Open a file with the default system application.
+# @param path Path to the file to open.
 def open_file(path):
     if platform.system() == 'Windows':
         os.startfile(path)
@@ -30,7 +58,13 @@ def open_file(path):
     else:
         subprocess.Popen(['xdg-open', path])
 
-# Get local IP
+##
+# @brief Get the current machine's local IP address.
+#
+# Attempts a connection to a public DNS server to infer outbound interface IP.
+# Fallback is 127.0.0.1 if no internet connection exists.
+#
+# @return Local IP address as string.
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -41,8 +75,17 @@ def get_local_ip():
     finally:
         s.close()
 
-# Settings dialog
+##
+# @class SettingsDialog
+# @brief Dialog window for editing and saving user configuration.
+#
+# Provides editable fields for handle, port, autoreply message, and image directory.
+# Saves updated values directly into the configuration TOML file and notifies the user.
 class SettingsDialog(QDialog):
+    ##
+    # @brief Constructor for SettingsDialog.
+    # @param config Reference to the active client configuration.
+    # @param parent Parent QWidget, if any.
     def __init__(self, config, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Settings")
@@ -64,6 +107,11 @@ class SettingsDialog(QDialog):
 
         self.config = config
 
+    ##
+    # @brief Validate and persist user configuration to disk.
+    #
+    # Updates local config dictionary and re-writes the TOML file.
+    # Informs user via message box on success or error.
     def save(self):
         try:
             self.config["handle"] = self.handle_field.text()
@@ -90,7 +138,16 @@ class SettingsDialog(QDialog):
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Invalid input: {e}")
 
-# GUI Hauptprocess
+##
+# @brief Launches the SLCP GUI as a separate process.
+#
+# Connects user inputs and received messages through inter-process communication (IPC) with the network process.
+# Implements all chat interface elements (send, AFK toggle, image sending, client listing, etc.).
+# Polls for incoming network data and handles state updates accordingly.
+#
+# @param config A dictionary containing client state and runtime configuration.
+# @param to_network A pipe object to send data to the network process.
+# @param from_network A pipe object to receive data from the network process.
 def gui_process(config, to_network, from_network):
     handle = config['handle']
     img_path = config['imagepath']
@@ -100,10 +157,12 @@ def gui_process(config, to_network, from_network):
     wnd = QWidget()
     wnd.setWindowTitle(f"SLCP Chat – {handle}")
 
+    # Main layout
     vlayout = QVBoxLayout()
     chat = QTextEdit(); chat.setReadOnly(True)
     vlayout.addWidget(chat)
 
+    # Control layout (buttons + inputs)
     controls = QHBoxLayout()
     dest_input = QLineEdit(); dest_input.setPlaceholderText("Recipient handle")
     msg_input = QLineEdit(); msg_input.setPlaceholderText("Message…")
@@ -124,11 +183,17 @@ def gui_process(config, to_network, from_network):
     local_peers = set()
     afk_mode = False
 
+    ##
+    # @brief Append message to chat window with color and timestamp.
+    # @param text The message content.
+    # @param color The HTML hex color string for the message text.
     def append(text, color="#010202"):
         chat.setTextColor(QColor(color))
         chat.append(f"{ts()} {text}")
         chat.moveCursor(QTextCursor.End)
 
+    ##
+    # @brief Sends a text message to a specified recipient.
     def send_message():
         dest = dest_input.text().strip()
         msg = msg_input.text().strip()
@@ -138,6 +203,8 @@ def gui_process(config, to_network, from_network):
         to_network.send(("MSG", dest, msg))
         msg_input.clear()
 
+    ##
+    # @brief Opens a file dialog and sends an image file to the specified recipient.
     def send_image():
         path, _ = QFileDialog.getOpenFileName(wnd, "Select image", "", "Images (*.png *.jpg *.bmp *.webp)")
         if not path:
@@ -149,6 +216,8 @@ def gui_process(config, to_network, from_network):
         append(f"{handle} → {dest} [Image]", "#2A8940")
         to_network.send(("IMG", dest, path))
 
+    ##
+    # @brief Displays a list of active known peers.
     def show_clients():
         peers = [(h, ip, pt) for (h, ip, pt) in config['peers'] if h != handle]
         if not peers:
@@ -158,9 +227,11 @@ def gui_process(config, to_network, from_network):
             local_port = config["port"][0]
             info = "\n".join(f"{h} ({ip}:{pt})" for (h, ip, pt) in peers)
             QMessageBox.information(wnd, "Clients", f"You: {handle} ({local_ip}:{local_port})\n\nActive clients:\n{info}")
-    already_closing = False 
-    
 
+    already_closing = False
+
+    ##
+    # @brief Sends LEAVE and EXIT signals and closes the application.
     def leave_chat():
         nonlocal already_closing
         if already_closing:
@@ -170,6 +241,8 @@ def gui_process(config, to_network, from_network):
         to_network.send(("EXIT", "", ""))
         wnd.close()
 
+    ##
+    # @brief Toggles AFK (away-from-keyboard) mode and updates GUI/network.
     def toggle_afk():
         nonlocal afk_mode
         if btn_afk.isChecked():
@@ -185,6 +258,8 @@ def gui_process(config, to_network, from_network):
             to_network.send(("AFK", handle, "OFF"))
             append("[System] AFK mode disabled", "#31c209")
 
+    ##
+    # @brief Toggles between light and dark UI themes.
     def toggle_dark():
         if btn_dark.isChecked():
             app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
@@ -193,11 +268,13 @@ def gui_process(config, to_network, from_network):
             app.setStyleSheet("")
             btn_dark.setText("Dark Mode")
 
+    ##
+    # @brief Opens the settings dialog for editing user config.
     def open_settings():
         dlg = SettingsDialog(config)
         dlg.exec_()
 
-    # add Buttons
+    # Connect GUI controls to functionality
     btn_send.clicked.connect(send_message)
     msg_input.returnPressed.connect(send_message)
     btn_img.clicked.connect(send_image)
@@ -209,6 +286,8 @@ def gui_process(config, to_network, from_network):
     
     already_left = set()
 
+    ##
+    # @brief Polls the pipe from the network process for new messages/events.
     def poll_network():
         current = {h for (h, _, _) in config['peers'] if h != handle}
         newcomers = current - local_peers
@@ -225,16 +304,18 @@ def gui_process(config, to_network, from_network):
                 open_file(payload)
             elif typ == 'LEAVE':
                 if src in already_left:
-                   return
+                    return
                 already_left.add(src)
                 append(f"⚠️ {src} left the chat.", "#D60C0C")
                 if src in local_peers:
-                   local_peers.remove(src)
+                    local_peers.remove(src)
                 config['peers'][:] = [p for p in config['peers'] if p[0] != src]
-
 
     append(f"👋 Welcome, {handle}!", "#000000")
 
+    ##
+    # @brief Triggered on window close event – clean exit handler.
+    # @param event Qt close event.
     def on_close_event(event):
         nonlocal already_closing
         if not already_closing:
@@ -243,7 +324,7 @@ def gui_process(config, to_network, from_network):
         already_closing = True
         event.accept()
 
-    
+    # Use QTimer instead of threads to poll for new data
     timer = QTimer()
     timer.timeout.connect(poll_network)
     timer.start(50)

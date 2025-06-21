@@ -1,14 +1,36 @@
+##
+# @file config.toml
+# @brief Configuration file for SLCP clients.
+#
+# This configuration file defines the list of available clients for the
+# SLCP peer-to-peer chat application. Each client section contains
+# the networking and UI preferences used to start an instance.
+#
+# @section format_sec Format
+# The file uses the TOML format and contains a list of [[clients]] tables.
+#
+# @section fields_sec Fields
+# - handle: Unique name/identifier for the client.
+# - port: List of two ports. First is the UDP port for peer communication,
+#         second is typically used for image transfer (or a reserved fallback).
+# - whoisport: Broadcast port used for WHO and JOIN messages.
+# - autoreply: Message sent automatically when the user is AFK.
+# - away: Boolean flag indicating whether the user starts in AFK mode.
+# - imagepath: Path to the local folder where received images will be stored.
+#
+# @note All clients share the same whoisport for discovery purposes.
+
 [[clients]]
-handle = "Aashir"
-port = [ 5008, 6000,]
-whoisport = 4000
-autoreply = "in einer Stunde da"
-away = false
-imagepath = "./images/aashir"
+handle = "Aashir"                     # Unique name for the client
+port = [ 5008, 6000 ]                 # UDP port for chat, secondary port
+whoisport = 4000                     # Broadcast port for WHO/JOIN messages
+autoreply = "in einer Stunde da"     # AFK auto-response message
+away = false                          # Whether the client is initially AFK
+imagepath = "./images/aashir"        # Directory for storing received images
 
 [[clients]]
 handle = "Bratli"
-port = [ 5004, 6000,]
+port = [ 5004, 6000 ]
 whoisport = 4000
 autoreply = "Bin AFK."
 away = false
@@ -16,7 +38,7 @@ imagepath = "./images/bratli"
 
 [[clients]]
 handle = "Jalal"
-port = [ 5005, 6000,]
+port = [ 5005, 6000 ]
 whoisport = 4000
 autoreply = "Bin in 10 Minuten wieder da."
 away = false

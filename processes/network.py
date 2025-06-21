@@ -1,8 +1,21 @@
+"""
+@file network.py
+@brief Handles SLCP networking logic including peer discovery, messaging, AFK handling, and image transfer over TCP/UDP.
+
+This module implements the core networking layer of the SLCP protocol. It allows clients to send and receive messages and images, manage AFK states, and maintain a list of peers discovered in the network. Communication is done using UDP for messages and TCP for binary image transfer.
+"""
+
 import socket, os, time, threading
 
 MAX_UDP_SIZE = 65507  # Maximum safe UDP packet size
 
 # Sends an image via TCP after notifying the recipient via UDP
+#
+# @param config       Dictionary containing client configuration.
+# @param dest_handle  Handle of the recipient client.
+# @param filepath     Path to the image file.
+# @param peer_ip      IP address of the peer.
+# @param peer_port    UDP port of the peer.
 def send_image_via_tcp(config, dest_handle, filepath, peer_ip, peer_port):
     handle   = config["handle"]
     img_path = config["imagepath"]
@@ -30,7 +43,11 @@ def send_image_via_tcp(config, dest_handle, filepath, peer_ip, peer_port):
 
     threading.Thread(target=_serve, daemon=True).start()
 
-# Main network process
+# Main network process responsible for handling all networking logic
+#
+# @param config   Client configuration dictionary.
+# @param ui2net   Pipe for receiving commands from the UI (CLI or GUI).
+# @param net2ui   Pipe for sending events back to the UI.
 def network_process(config, ui2net, net2ui):
     handle     = config["handle"]
     port       = config["port"][0]
@@ -114,7 +131,6 @@ def network_process(config, ui2net, net2ui):
                     afk_replied_to.clear()
                 print(f"[NETWORK] AFK mode {'enabled' if away else 'disabled'}.")
 
-               
 
         # Handle incoming UDP packets
         try:
