@@ -1,0 +1,58 @@
+\doxysection{cli.\+py File Reference}
+\hypertarget{cli_8py}{}\label{cli_8py}\index{cli.py@{cli.py}}
+
+
+Command-\/line interface for SLCP peer-\/to-\/peer chat.  
+
+
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacecli}{cli}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacecli_a83b773ef0d55a5629682c5a960c5367a}{cli.\+ts}} ()
+\begin{DoxyCompactList}\small\item\em Returns a formatted timestamp string. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecli_a701551963d42fa00ce915e318c6c3bfc}{cli.\+port\+\_\+in\+\_\+use}} (port)
+\begin{DoxyCompactList}\small\item\em Checks if a UDP port is currently in use. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecli_a8985492789245e09a948fb5b752d03da}{cli.\+print\+\_\+commands}} ()
+\begin{DoxyCompactList}\small\item\em Prints a list of available CLI commands. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecli_abd03877665d8dd3f485f589315964751}{cli.\+main}} ()
+\begin{DoxyCompactList}\small\item\em Main function that initializes the CLI chat client. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+str \mbox{\hyperlink{namespacecli_aa2f0bc9f8733fb8bb200a8ffea0d6b2d}{cli.\+CONFIG\+\_\+\+FILE}} = "{}config.\+toml"{}
+\item 
+str \mbox{\hyperlink{namespacecli_a4de3a9a0d544aa9a554cd273612457cb}{cli.\+COLOR\+\_\+\+RESET}} = "{}\textbackslash{}033\mbox{[}0m"{}
+\item 
+str \mbox{\hyperlink{namespacecli_a31839bbe936d3cd82ffaf624e8fad2b7}{cli.\+COLOR\+\_\+\+GREEN}} = "{}\textbackslash{}033\mbox{[}92m"{}
+\item 
+str \mbox{\hyperlink{namespacecli_aae7123241d8e86b369fbfe2d35fd94fd}{cli.\+COLOR\+\_\+\+RED}} = "{}\textbackslash{}033\mbox{[}91m"{}
+\item 
+str \mbox{\hyperlink{namespacecli_a93a4049e836a2a323487c12f1ae5d446}{cli.\+COLOR\+\_\+\+YELLOW}} = "{}\textbackslash{}033\mbox{[}93m"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Command-\/line interface for SLCP peer-\/to-\/peer chat. 
+
+This CLI allows users to start a chat client, send messages and images, toggle AFK mode, and list active peers on the network. It communicates with discovery and network subprocesses and uses inter-\/process communication (IPC) pipes to send and receive events.\hypertarget{cli_8py_features_sec}{}\doxysubsection{\texorpdfstring{Features}{Features}}\label{cli_8py_features_sec}
+
+\begin{DoxyItemize}
+\item Text and image messaging
+\item Peer discovery
+\item AFK autoreply toggle
+\item Dynamic client configuration from config.\+toml
+\end{DoxyItemize}\hypertarget{cli_8py_usage_sec}{}\doxysubsection{\texorpdfstring{Usage}{Usage}}\label{cli_8py_usage_sec}
+Run the CLI as\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python\ cli.py\ <Handle>}
+
+\end{DoxyCode}
+ The handle must be defined in {\ttfamily config.\+toml}. 
+
+Definition in file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+

@@ -1,0 +1,217 @@
+\chapter{Chat\+Programm\+\_\+\+Final }
+\hypertarget{index}{}\label{index}\index{ChatProgramm\_Final@{ChatProgramm\_Final}}
+\label{index_md__r_e_a_d_m_e}%
+\Hypertarget{index_md__r_e_a_d_m_e}%
+
+
+A decentralized, peer-\/to-\/peer chat application developed in Python for the {\bfseries{Betriebssysteme und Rechnernetze}} (Operating Systems and Computer Networks) course. ~\newline
+ This project implements a custom protocol called SLCP (Simple Local Chat Protocol) to demonstrate real-\/time communication over local networks without relying on central servers.\hypertarget{index_autotoc_md1}{}\doxysection{\texorpdfstring{Project Overview}{Project Overview}}\label{index_autotoc_md1}
+The application enables direct communication between clients in the same network, supporting both text messaging and image transfer. Peers are discovered dynamically via UDP broadcasting. The system combines lightweight protocols (UDP for control/data, TCP for binary files) and provides both a graphical and terminal-\/based user interface.
+
+Typical use cases\+:
+\begin{DoxyItemize}
+\item Real-\/time 1\+:1 peer messaging
+\item Reliable image file transfer
+\item Away-\/from-\/keyboard (AFK) status with autoreplies
+\item Auto-\/discovery of connected clients in the network
+\item GUI and CLI interface options
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md3}{}\doxysection{\texorpdfstring{Features}{Features}}\label{index_autotoc_md3}
+
+\begin{DoxyItemize}
+\item {\bfseries{Peer Discovery\+:}} Broadcast-\/based peer discovery using {\ttfamily JOIN}, {\ttfamily WHO}, and {\ttfamily KNOWUSERS} messages.
+\item {\bfseries{Message Exchange\+:}} Real-\/time message delivery over UDP.
+\item {\bfseries{Image Transfer\+:}} TCP-\/based file transfer with UDP notification handshakes.
+\item {\bfseries{AFK Mode\+:}} Automatic autoreplies when a user is away.
+\item {\bfseries{Graphical Interface\+:}} Built using Py\+Qt5 with dark/light theme support.
+\item {\bfseries{Settings Dialog\+:}} Runtime configuration for user handle, port, autoreply message, and image folder.
+\item {\bfseries{CLI Interface\+:}} Text-\/based command-\/line chat interface with full feature parity.
+\item {\bfseries{Fully Documented\+:}} Comprehensive technical documentation generated using Doxygen.
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md5}{}\doxysection{\texorpdfstring{Architecture}{Architecture}}\label{index_autotoc_md5}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{┌──────────────┐\ \ \ \ \ \ \ ┌────────────────┐\ \ \ \ \ \ \ ┌────────────┐}
+\DoxyCodeLine{│\ \ discovery\ \ \ │──────▶│\ \ peer\ registry\ │◀──────│\ \ network\ \ \ │}
+\DoxyCodeLine{└──────────────┘\ \ \ \ \ \ \ └────────────────┘\ \ \ \ \ \ \ └────────────┘}
+\DoxyCodeLine{\ \ \ \ \ \ \ │\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ▲\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ▲}
+\DoxyCodeLine{\ \ \ \ \ \ \ ▼\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ │\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ │}
+\DoxyCodeLine{\ ┌────────────┐\ \ \ \ \ \ \ \ \ \ \ ┌────────────┐\ \ \ \ \ \ \ \ \ \ ┌────────────┐}
+\DoxyCodeLine{\ │\ UDP\ socket\ │\ \ \ \ \ \ \ \ \ \ \ │\ config.toml│\ \ \ \ \ \ \ \ \ \ │\ \ \ GUI\ /\ CLI│}
+\DoxyCodeLine{\ └────────────┘\ \ \ \ \ \ \ \ \ \ \ └────────────┘\ \ \ \ \ \ \ \ \ \ └────────────┘}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md6}{}\doxysubsection{\texorpdfstring{Core Modules}{Core Modules}}\label{index_autotoc_md6}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Module  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Module  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description  }\\\cline{1-2}
+\endhead
+{\ttfamily \doxylink{main_8py}{main.\+py}}  &Application entry point with GUI interface  \\\cline{1-2}
+{\ttfamily \doxylink{cli_8py}{cli.\+py}}  &Alternative CLI-\/based interface  \\\cline{1-2}
+{\ttfamily \doxylink{discovery_8py}{discovery.\+py}}  &Broadcast-\/based peer discovery logic  \\\cline{1-2}
+{\ttfamily \doxylink{network_8py}{network.\+py}}  &Handles UDP messaging, AFK logic, TCP images  \\\cline{1-2}
+{\ttfamily \doxylink{gui_8py}{gui.\+py}}  &Py\+Qt5-\/based user interface logic  \\\cline{1-2}
+{\ttfamily config.\+toml}  &TOML configuration for clients and settings  \\\cline{1-2}
+\end{longtabu}
+
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md8}{}\doxysection{\texorpdfstring{Team and Responsibilities}{Team and Responsibilities}}\label{index_autotoc_md8}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Matrikelnummer  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Role \& Contributions  }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Matrikelnummer  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Role \& Contributions  }\\\cline{1-3}
+\endhead
+Joseph Bolaños Beyloune  &1534591  &GUI, documentation, overall integration  \\\cline{1-3}
+Jalal Eddin Alhaj Ahmad  &1428348  &UDP and TCP communication logic  \\\cline{1-3}
+Ömer Faruk Capraz  &1522507  &Peer discovery (JOIN/\+WHO/\+KNOWUSERS)  \\\cline{1-3}
+Bratli Metuka  &1505429  &Testing, protocol implementation review  \\\cline{1-3}
+Aashir Ahtisham  &1447390  &TCP-\/based image transfer logic  \\\cline{1-3}
+\end{longtabu}
+
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md10}{}\doxysection{\texorpdfstring{Installation \& Setup}{Installation \& Setup}}\label{index_autotoc_md10}
+\hypertarget{index_autotoc_md11}{}\doxysubsection{\texorpdfstring{1. Install Dependencies}{1. Install Dependencies}}\label{index_autotoc_md11}
+Ensure Python 3.\+10+ is installed. Then install\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip\ install\ PyQt5\ toml\ qdarkstyle}
+
+\end{DoxyCode}
+
+
+Or using {\ttfamily requirements.\+txt} if provided\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip\ install\ -\/r\ requirements.txt}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md13}{}\doxysubsection{\texorpdfstring{2. Configure Clients}{2. Configure Clients}}\label{index_autotoc_md13}
+Update the {\ttfamily config.\+toml} file to define your client settings\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{[[clients]]}
+\DoxyCodeLine{handle\ =\ "{}Aashir"{}}
+\DoxyCodeLine{port\ =\ [5008,\ 6000]}
+\DoxyCodeLine{whoisport\ =\ 4000}
+\DoxyCodeLine{autoreply\ =\ "{}Back\ in\ one\ hour"{}}
+\DoxyCodeLine{away\ =\ false}
+\DoxyCodeLine{imagepath\ =\ "{}./images/aashir"{}}
+
+\end{DoxyCode}
+
+
+Each client must have a unique {\ttfamily handle}, and ports must not conflict.
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md15}{}\doxysubsection{\texorpdfstring{3. Launch the Application}{3. Launch the Application}}\label{index_autotoc_md15}
+To run with the GUI\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python3\ main.py\ Aashir}
+
+\end{DoxyCode}
+
+
+To run via CLI\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python3\ cli.py\ Aashir}
+
+\end{DoxyCode}
+
+
+Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily config.\+toml}.
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md17}{}\doxysubsection{\texorpdfstring{4. GUI Controls}{4. GUI Controls}}\label{index_autotoc_md17}
+
+\begin{DoxyItemize}
+\item {\bfseries{Send Message}}\+: Press Enter or click "{}\+Send"{}
+\item {\bfseries{Send Image}}\+: Select an image via "{}\+Send Image"{} button
+\item {\bfseries{Clients}}\+: Show connected peers
+\item {\bfseries{AFK Toggle}}\+: Enable/disable AFK autoreply
+\item {\bfseries{Settings}}\+: Edit configuration interactively
+\item {\bfseries{Leave Chat}}\+: Graceful exit
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md19}{}\doxysection{\texorpdfstring{Testing}{Testing}}\label{index_autotoc_md19}
+You can simulate multiple clients by\+:
+\begin{DoxyItemize}
+\item Opening multiple terminal sessions with different handles
+\item Running on separate machines in the same LAN
+\item Observing image transfers and peer join/leave messages
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md21}{}\doxysection{\texorpdfstring{Documentation}{Documentation}}\label{index_autotoc_md21}
+Doxygen documentation is located at\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{docs/html/index.html}
+
+\end{DoxyCode}
+
+
+To regenerate\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{doxygen\ Doxyfile}
+
+\end{DoxyCode}
+
+
+The documentation includes\+:
+\begin{DoxyItemize}
+\item Function and class reference
+\item Namespace and file structure
+\item Inline code documentation
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md23}{}\doxysection{\texorpdfstring{Technologies}{Technologies}}\label{index_autotoc_md23}
+
+\begin{DoxyItemize}
+\item {\bfseries{Python 3.\+10+}}
+\item {\bfseries{Py\+Qt5}}
+\item {\bfseries{TOML}}
+\item {\bfseries{Socket Programming (UDP/\+TCP)}}
+\item {\bfseries{Doxygen}}
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md25}{}\doxysection{\texorpdfstring{Security Notice}{Security Notice}}\label{index_autotoc_md25}
+This application is designed for academic purposes only. ~\newline
+ It does {\bfseries{not}} implement encryption, authentication, or secure transport mechanisms. ~\newline
+ Use only on trusted local networks.
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md27}{}\doxysection{\texorpdfstring{License}{License}}\label{index_autotoc_md27}
+MIT License – For educational use only. 

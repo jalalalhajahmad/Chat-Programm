@@ -1,0 +1,343 @@
+\doxysection{gui Namespace Reference}
+\hypertarget{namespacegui}{}\label{namespacegui}\index{gui@{gui}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgui_1_1_settings_dialog}{Settings\+Dialog}}
+\begin{DoxyCompactList}\small\item\em Dialog window for editing and saving user configuration. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacegui_af9f6976b4463db5432611939ae149165}{ts}} ()
+\begin{DoxyCompactList}\small\item\em Generate a timestamp string for message labeling. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacegui_a2f060f2999f2eea96b81b78651f23ca2}{open\+\_\+file}} (path)
+\begin{DoxyCompactList}\small\item\em Open a file with the default system application. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacegui_aaf4e5f7b99fb4720e1c09d9408746196}{get\+\_\+local\+\_\+ip}} ()
+\begin{DoxyCompactList}\small\item\em Get the current machine\textquotesingle{}s local IP address. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacegui_a49dc5a1f5d0afc6fc98577c924372216}{gui\+\_\+process}} (config, to\+\_\+network, from\+\_\+network)
+\begin{DoxyCompactList}\small\item\em Launches the SLCP GUI as a separate process. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{namespacegui_a725e71dc4cca328655738aa0e9f1c75c}{MAX\+\_\+\+DISPLAY\+\_\+\+CHUNK}} = 200
+\item 
+str \mbox{\hyperlink{namespacegui_a323c82f638a4ff368e735b52c7f7939d}{CONFIG\+\_\+\+FILE}} = "{}config.\+toml"{}
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{namespacegui_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacegui_aaf4e5f7b99fb4720e1c09d9408746196}\index{gui@{gui}!get\_local\_ip@{get\_local\_ip}}
+\index{get\_local\_ip@{get\_local\_ip}!gui@{gui}}
+\doxysubsubsection{\texorpdfstring{get\_local\_ip()}{get\_local\_ip()}}
+{\footnotesize\ttfamily \label{namespacegui_aaf4e5f7b99fb4720e1c09d9408746196} 
+gui.\+get\+\_\+local\+\_\+ip (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Get the current machine\textquotesingle{}s local IP address. 
+
+Attempts a connection to a public DNS server to infer outbound interface IP. Fallback is 127.\+0.\+0.\+1 if no internet connection exists.
+
+\begin{DoxyReturn}{Returns}
+Local IP address as string. 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00068}{68}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00068\ \textcolor{keyword}{def\ }get\_local\_ip():}
+\DoxyCodeLine{00069\ \ \ \ \ s\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ s.connect((\textcolor{stringliteral}{"{}8.8.8.8"{}},\ 80))}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ s.getsockname()[0]}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordflow}{except}\ Exception:}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}127.0.0.1"{}}}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordflow}{finally}:}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ s.close()}
+\DoxyCodeLine{00077\ }
+
+\end{DoxyCode}
+\Hypertarget{namespacegui_a49dc5a1f5d0afc6fc98577c924372216}\index{gui@{gui}!gui\_process@{gui\_process}}
+\index{gui\_process@{gui\_process}!gui@{gui}}
+\doxysubsubsection{\texorpdfstring{gui\_process()}{gui\_process()}}
+{\footnotesize\ttfamily \label{namespacegui_a49dc5a1f5d0afc6fc98577c924372216} 
+gui.\+gui\+\_\+process (\begin{DoxyParamCaption}\item[{}]{config}{, }\item[{}]{to\+\_\+network}{, }\item[{}]{from\+\_\+network}{}\end{DoxyParamCaption})}
+
+
+
+Launches the SLCP GUI as a separate process. 
+
+Connects user inputs and received messages through inter-\/process communication (IPC) with the network process. Implements all chat interface elements (send, AFK toggle, image sending, client listing, etc.). Polls for incoming network data and handles state updates accordingly.
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & A dictionary containing client state and runtime configuration. \\
+\hline
+{\em to\+\_\+network} & A pipe object to send data to the network process. \\
+\hline
+{\em from\+\_\+network} & A pipe object to receive data from the network process. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00151}{151}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00151\ \textcolor{keyword}{def\ }gui\_process(config,\ to\_network,\ from\_network):}
+\DoxyCodeLine{00152\ \ \ \ \ handle\ =\ config[\textcolor{stringliteral}{'handle'}]}
+\DoxyCodeLine{00153\ \ \ \ \ img\_path\ =\ config[\textcolor{stringliteral}{'imagepath'}]}
+\DoxyCodeLine{00154\ \ \ \ \ os.makedirs(img\_path,\ exist\_ok=\textcolor{keyword}{True})}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ app\ =\ QApplication(sys.argv)}
+\DoxyCodeLine{00157\ \ \ \ \ wnd\ =\ QWidget()}
+\DoxyCodeLine{00158\ \ \ \ \ wnd.setWindowTitle(f\textcolor{stringliteral}{"{}SLCP\ Chat\ –\ \{handle\}"{}})}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{comment}{\#\ Main\ layout}}
+\DoxyCodeLine{00161\ \ \ \ \ vlayout\ =\ QVBoxLayout()}
+\DoxyCodeLine{00162\ \ \ \ \ chat\ =\ QTextEdit();\ chat.setReadOnly(\textcolor{keyword}{True})}
+\DoxyCodeLine{00163\ \ \ \ \ vlayout.addWidget(chat)}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{comment}{\#\ Control\ layout\ (buttons\ +\ inputs)}}
+\DoxyCodeLine{00166\ \ \ \ \ controls\ =\ QHBoxLayout()}
+\DoxyCodeLine{00167\ \ \ \ \ dest\_input\ =\ QLineEdit();\ dest\_input.setPlaceholderText(\textcolor{stringliteral}{"{}Recipient\ handle"{}})}
+\DoxyCodeLine{00168\ \ \ \ \ msg\_input\ =\ QLineEdit();\ msg\_input.setPlaceholderText(\textcolor{stringliteral}{"{}Message…"{}})}
+\DoxyCodeLine{00169\ \ \ \ \ btn\_send\ =\ QPushButton(\textcolor{stringliteral}{"{}Send"{}})}
+\DoxyCodeLine{00170\ \ \ \ \ btn\_img\ =\ QPushButton(\textcolor{stringliteral}{"{}Send\ Image"{}})}
+\DoxyCodeLine{00171\ \ \ \ \ btn\_clients\ =\ QPushButton(\textcolor{stringliteral}{"{}Clients"{}})}
+\DoxyCodeLine{00172\ \ \ \ \ btn\_leave\ =\ QPushButton(\textcolor{stringliteral}{"{}Leave\ Chat"{}})}
+\DoxyCodeLine{00173\ \ \ \ \ btn\_afk\ =\ QPushButton(\textcolor{stringliteral}{"{}AFK:\ OFF"{}});\ btn\_afk.setCheckable(\textcolor{keyword}{True})}
+\DoxyCodeLine{00174\ \ \ \ \ btn\_afk.setStyleSheet(\textcolor{stringliteral}{"{}background-\/color:\ \#666;\ color:\ white;"{}})}
+\DoxyCodeLine{00175\ \ \ \ \ btn\_dark\ =\ QPushButton(\textcolor{stringliteral}{"{}Dark\ Mode"{}});\ btn\_dark.setCheckable(\textcolor{keyword}{True})}
+\DoxyCodeLine{00176\ \ \ \ \ btn\_settings\ =\ QPushButton(\textcolor{stringliteral}{"{}Settings"{}})}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordflow}{for}\ w\ \textcolor{keywordflow}{in}\ (dest\_input,\ msg\_input,\ btn\_send,\ btn\_img,\ btn\_clients,\ btn\_settings,\ btn\_leave,\ btn\_afk,\ btn\_dark):}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ controls.addWidget(w)}
+\DoxyCodeLine{00180\ \ \ \ \ vlayout.addLayout(controls)}
+\DoxyCodeLine{00181\ \ \ \ \ wnd.setLayout(vlayout)}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \ \ local\_peers\ =\ set()}
+\DoxyCodeLine{00184\ \ \ \ \ afk\_mode\ =\ \textcolor{keyword}{False}}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \ \ \ \ }
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keyword}{def\ }append(text,\ color="{}\#010202"{}):}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ chat.setTextColor(QColor(color))}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ chat.append(f\textcolor{stringliteral}{"{}\{ts()\}\ \{text\}"{}})}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ chat.moveCursor(QTextCursor.End)}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \ \ \ \ }
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keyword}{def\ }send\_message():}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ dest\ =\ dest\_input.text().strip()}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ msg\ =\ msg\_input.text().strip()}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ dest\ \textcolor{keywordflow}{or}\ \textcolor{keywordflow}{not}\ msg:}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ append(f\textcolor{stringliteral}{"{}\{handle\}:\ \{msg\}"{}},\ \textcolor{stringliteral}{"{}\#2A8940"{}})}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ to\_network.send((\textcolor{stringliteral}{"{}MSG"{}},\ dest,\ msg))}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ msg\_input.clear()}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \ \ \ \ }
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keyword}{def\ }send\_image():}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ path,\ \_\ =\ QFileDialog.getOpenFileName(wnd,\ \textcolor{stringliteral}{"{}Select\ image"{}},\ \textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}Images\ (*.png\ *.jpg\ *.bmp\ *.webp)"{}})}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ path:}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ dest\ =\ dest\_input.text().strip()}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ dest:}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ QMessageBox.warning(wnd,\ \textcolor{stringliteral}{"{}Error"{}},\ \textcolor{stringliteral}{"{}Please\ enter\ recipient\ handle!"{}})}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ append(f\textcolor{stringliteral}{"{}\{handle\}\ →\ \{dest\}\ [Image]"{}},\ \textcolor{stringliteral}{"{}\#2A8940"{}})}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ to\_network.send((\textcolor{stringliteral}{"{}IMG"{}},\ dest,\ path))}
+\DoxyCodeLine{00218\ }
+\DoxyCodeLine{00219\ \ \ \ \ }
+\DoxyCodeLine{00221\ \ \ \ \ \textcolor{keyword}{def\ }show\_clients():}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ peers\ =\ [(h,\ ip,\ pt)\ \textcolor{keywordflow}{for}\ (h,\ ip,\ pt)\ \textcolor{keywordflow}{in}\ config[\textcolor{stringliteral}{'peers'}]\ \textcolor{keywordflow}{if}\ h\ !=\ handle]}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ peers:}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ QMessageBox.information(wnd,\ \textcolor{stringliteral}{"{}Clients"{}},\ \textcolor{stringliteral}{"{}No\ other\ clients\ found."{}})}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ local\_ip\ =\ get\_local\_ip()}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ local\_port\ =\ config[\textcolor{stringliteral}{"{}port"{}}][0]}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ info\ =\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}}.join(f\textcolor{stringliteral}{"{}\{h\}\ (\{ip\}:\{pt\})"{}}\ \textcolor{keywordflow}{for}\ (h,\ ip,\ pt)\ \textcolor{keywordflow}{in}\ peers)}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ QMessageBox.information(wnd,\ \textcolor{stringliteral}{"{}Clients"{}},\ f\textcolor{stringliteral}{"{}You:\ \{handle\}\ (\{local\_ip\}:\{local\_port\})\(\backslash\)n\(\backslash\)nActive\ clients:\(\backslash\)n\{info\}"{}})}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \ \ \ \ already\_closing\ =\ \textcolor{keyword}{False}}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \ \ \ \ }
+\DoxyCodeLine{00235\ \ \ \ \ \textcolor{keyword}{def\ }leave\_chat():}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ nonlocal\ already\_closing}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ already\_closing:}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ already\_closing\ =\ \textcolor{keyword}{True}}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ to\_network.send((\textcolor{stringliteral}{"{}LEAVE"{}},\ handle,\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ to\_network.send((\textcolor{stringliteral}{"{}EXIT"{}},\ \textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ wnd.close()}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \ \ \ \ }
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keyword}{def\ }toggle\_afk():}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ nonlocal\ afk\_mode}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ btn\_afk.isChecked():}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ btn\_afk.setText(\textcolor{stringliteral}{"{}AFK:\ ON"{}})}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ btn\_afk.setStyleSheet(\textcolor{stringliteral}{"{}background-\/color:\ \#cc5500;\ color:\ white;"{}})}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \ \ \ \ afk\_mode\ =\ \textcolor{keyword}{True}}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \ \ \ \ to\_network.send((\textcolor{stringliteral}{"{}AFK"{}},\ handle,\ \textcolor{stringliteral}{"{}ON"{}}))}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \ \ \ \ append(\textcolor{stringliteral}{"{}[System]\ AFK\ mode\ enabled"{}},\ \textcolor{stringliteral}{"{}\#c22809"{}})}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \ \ \ \ btn\_afk.setText(\textcolor{stringliteral}{"{}AFK:\ OFF"{}})}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ btn\_afk.setStyleSheet(\textcolor{stringliteral}{"{}background-\/color:\ \#666;\ color:\ white;"{}})}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ afk\_mode\ =\ \textcolor{keyword}{False}}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ to\_network.send((\textcolor{stringliteral}{"{}AFK"{}},\ handle,\ \textcolor{stringliteral}{"{}OFF"{}}))}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ append(\textcolor{stringliteral}{"{}[System]\ AFK\ mode\ disabled"{}},\ \textcolor{stringliteral}{"{}\#31c209"{}})}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00261\ \ \ \ \ }
+\DoxyCodeLine{00263\ \ \ \ \ \textcolor{keyword}{def\ }toggle\_dark():}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ btn\_dark.isChecked():}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \ \ \ \ app.setStyleSheet(qdarkstyle.load\_stylesheet\_pyqt5())}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \ \ \ \ btn\_dark.setText(\textcolor{stringliteral}{"{}Light\ Mode"{}})}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ app.setStyleSheet(\textcolor{stringliteral}{"{}"{}})}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ btn\_dark.setText(\textcolor{stringliteral}{"{}Dark\ Mode"{}})}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \ \ \ \ }
+\DoxyCodeLine{00273\ \ \ \ \ \textcolor{keyword}{def\ }open\_settings():}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ dlg\ =\ SettingsDialog(config)}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ dlg.exec\_()}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \ \ \ \ \textcolor{comment}{\#\ Connect\ GUI\ controls\ to\ functionality}}
+\DoxyCodeLine{00278\ \ \ \ \ btn\_send.clicked.connect(send\_message)}
+\DoxyCodeLine{00279\ \ \ \ \ msg\_input.returnPressed.connect(send\_message)}
+\DoxyCodeLine{00280\ \ \ \ \ btn\_img.clicked.connect(send\_image)}
+\DoxyCodeLine{00281\ \ \ \ \ btn\_clients.clicked.connect(show\_clients)}
+\DoxyCodeLine{00282\ \ \ \ \ btn\_leave.clicked.connect(leave\_chat)}
+\DoxyCodeLine{00283\ \ \ \ \ btn\_afk.clicked.connect(toggle\_afk)}
+\DoxyCodeLine{00284\ \ \ \ \ btn\_dark.clicked.connect(toggle\_dark)}
+\DoxyCodeLine{00285\ \ \ \ \ btn\_settings.clicked.connect(open\_settings)}
+\DoxyCodeLine{00286\ \ \ \ \ }
+\DoxyCodeLine{00287\ \ \ \ \ already\_left\ =\ set()}
+\DoxyCodeLine{00288\ }
+\DoxyCodeLine{00289\ \ \ \ \ }
+\DoxyCodeLine{00291\ \ \ \ \ \textcolor{keyword}{def\ }poll\_network():}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ current\ =\ \{h\ \textcolor{keywordflow}{for}\ (h,\ \_,\ \_)\ \textcolor{keywordflow}{in}\ config[\textcolor{stringliteral}{'peers'}]\ \textcolor{keywordflow}{if}\ h\ !=\ handle\}}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ newcomers\ =\ current\ -\/\ local\_peers}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ h\ \textcolor{keywordflow}{in}\ sorted(newcomers):}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ append(f\textcolor{stringliteral}{"{}\{h\}\ joined\ the\ chat."{}},\ \textcolor{stringliteral}{"{}\#2A8940"{}})}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ local\_peers.update(newcomers)}
+\DoxyCodeLine{00297\ }
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ from\_network.poll():}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ typ,\ src,\ payload\ =\ from\_network.recv()}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ typ\ ==\ \textcolor{stringliteral}{'MSG'}:}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ append(f\textcolor{stringliteral}{"{}\{src\}:\ \{payload\}"{}},\ \textcolor{stringliteral}{"{}\#204EB4"{}})}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ typ\ ==\ \textcolor{stringliteral}{'IMG'}:}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ append(f\textcolor{stringliteral}{"{}\{src\}\ sent\ image\ →\ \{payload\}"{}},\ \textcolor{stringliteral}{"{}\#204EB4"{}})}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ open\_file(payload)}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ typ\ ==\ \textcolor{stringliteral}{'LEAVE'}:}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ src\ \textcolor{keywordflow}{in}\ already\_left:}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ already\_left.add(src)}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ append(f\textcolor{stringliteral}{"{}⚠️\ \{src\}\ left\ the\ chat."{}},\ \textcolor{stringliteral}{"{}\#D60C0C"{}})}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ src\ \textcolor{keywordflow}{in}\ local\_peers:}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ local\_peers.remove(src)}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ config[\textcolor{stringliteral}{'peers'}][:]\ =\ [p\ \textcolor{keywordflow}{for}\ p\ \textcolor{keywordflow}{in}\ config[\textcolor{stringliteral}{'peers'}]\ \textcolor{keywordflow}{if}\ p[0]\ !=\ src]}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \ \ \ \ append(f\textcolor{stringliteral}{"{}👋\ Welcome,\ \{handle\}!"{}},\ \textcolor{stringliteral}{"{}\#000000"{}})}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \ \ \ \ }
+\DoxyCodeLine{00319\ \ \ \ \ \textcolor{keyword}{def\ }on\_close\_event(event):}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ nonlocal\ already\_closing}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ already\_closing:}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \ \ \ \ to\_network.send((\textcolor{stringliteral}{"{}LEAVE"{}},\ handle,\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ to\_network.send((\textcolor{stringliteral}{"{}EXIT"{}},\ \textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ already\_closing\ =\ \textcolor{keyword}{True}}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ event.accept()}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00327\ \ \ \ \ \textcolor{comment}{\#\ Use\ QTimer\ instead\ of\ threads\ to\ poll\ for\ new\ data}}
+\DoxyCodeLine{00328\ \ \ \ \ timer\ =\ QTimer()}
+\DoxyCodeLine{00329\ \ \ \ \ timer.timeout.connect(poll\_network)}
+\DoxyCodeLine{00330\ \ \ \ \ timer.start(50)}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \ \ \ \ wnd.show()}
+\DoxyCodeLine{00333\ \ \ \ \ app.exec\_()}
+
+\end{DoxyCode}
+\Hypertarget{namespacegui_a2f060f2999f2eea96b81b78651f23ca2}\index{gui@{gui}!open\_file@{open\_file}}
+\index{open\_file@{open\_file}!gui@{gui}}
+\doxysubsubsection{\texorpdfstring{open\_file()}{open\_file()}}
+{\footnotesize\ttfamily \label{namespacegui_a2f060f2999f2eea96b81b78651f23ca2} 
+gui.\+open\+\_\+file (\begin{DoxyParamCaption}\item[{}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Open a file with the default system application. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Path to the file to open. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00053}{53}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00053\ \textcolor{keyword}{def\ }open\_file(path):}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordflow}{if}\ platform.system()\ ==\ \textcolor{stringliteral}{'Windows'}:}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ os.startfile(path)}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordflow}{elif}\ platform.system()\ ==\ \textcolor{stringliteral}{'Darwin'}:}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ subprocess.Popen([\textcolor{stringliteral}{'open'},\ path])}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ subprocess.Popen([\textcolor{stringliteral}{'xdg-\/open'},\ path])}
+\DoxyCodeLine{00060\ }
+
+\end{DoxyCode}
+\Hypertarget{namespacegui_af9f6976b4463db5432611939ae149165}\index{gui@{gui}!ts@{ts}}
+\index{ts@{ts}!gui@{gui}}
+\doxysubsubsection{\texorpdfstring{ts()}{ts()}}
+{\footnotesize\ttfamily \label{namespacegui_af9f6976b4463db5432611939ae149165} 
+gui.\+ts (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Generate a timestamp string for message labeling. 
+
+\begin{DoxyReturn}{Returns}
+Timestamp in the format \mbox{[}HH\+:\+MM\+:SS\mbox{]} 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00046}{46}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00046\ \textcolor{keyword}{def\ }ts():}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{from}\ datetime\ \textcolor{keyword}{import}\ datetime}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordflow}{return}\ datetime.now().strftime(\textcolor{stringliteral}{"{}[\%H:\%M:\%S]"{}})}
+\DoxyCodeLine{00049\ }
+
+\end{DoxyCode}
+
+
+\label{doc-var-members}
+\Hypertarget{namespacegui_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacegui_a323c82f638a4ff368e735b52c7f7939d}\index{gui@{gui}!CONFIG\_FILE@{CONFIG\_FILE}}
+\index{CONFIG\_FILE@{CONFIG\_FILE}!gui@{gui}}
+\doxysubsubsection{\texorpdfstring{CONFIG\_FILE}{CONFIG\_FILE}}
+{\footnotesize\ttfamily \label{namespacegui_a323c82f638a4ff368e735b52c7f7939d} 
+str gui.\+CONFIG\+\_\+\+FILE = "{}config.\+toml"{}}
+
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00041}{41}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+\Hypertarget{namespacegui_a725e71dc4cca328655738aa0e9f1c75c}\index{gui@{gui}!MAX\_DISPLAY\_CHUNK@{MAX\_DISPLAY\_CHUNK}}
+\index{MAX\_DISPLAY\_CHUNK@{MAX\_DISPLAY\_CHUNK}!gui@{gui}}
+\doxysubsubsection{\texorpdfstring{MAX\_DISPLAY\_CHUNK}{MAX\_DISPLAY\_CHUNK}}
+{\footnotesize\ttfamily \label{namespacegui_a725e71dc4cca328655738aa0e9f1c75c} 
+int gui.\+MAX\+\_\+\+DISPLAY\+\_\+\+CHUNK = 200}
+
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00040}{40}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+

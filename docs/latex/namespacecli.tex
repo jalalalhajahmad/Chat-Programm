@@ -1,0 +1,330 @@
+\doxysection{cli Namespace Reference}
+\hypertarget{namespacecli}{}\label{namespacecli}\index{cli@{cli}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacecli_a83b773ef0d55a5629682c5a960c5367a}{ts}} ()
+\begin{DoxyCompactList}\small\item\em Returns a formatted timestamp string. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecli_a701551963d42fa00ce915e318c6c3bfc}{port\+\_\+in\+\_\+use}} (port)
+\begin{DoxyCompactList}\small\item\em Checks if a UDP port is currently in use. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecli_a8985492789245e09a948fb5b752d03da}{print\+\_\+commands}} ()
+\begin{DoxyCompactList}\small\item\em Prints a list of available CLI commands. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacecli_abd03877665d8dd3f485f589315964751}{main}} ()
+\begin{DoxyCompactList}\small\item\em Main function that initializes the CLI chat client. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+str \mbox{\hyperlink{namespacecli_aa2f0bc9f8733fb8bb200a8ffea0d6b2d}{CONFIG\+\_\+\+FILE}} = "{}config.\+toml"{}
+\item 
+str \mbox{\hyperlink{namespacecli_a4de3a9a0d544aa9a554cd273612457cb}{COLOR\+\_\+\+RESET}} = "{}\textbackslash{}033\mbox{[}0m"{}
+\item 
+str \mbox{\hyperlink{namespacecli_a31839bbe936d3cd82ffaf624e8fad2b7}{COLOR\+\_\+\+GREEN}} = "{}\textbackslash{}033\mbox{[}92m"{}
+\item 
+str \mbox{\hyperlink{namespacecli_aae7123241d8e86b369fbfe2d35fd94fd}{COLOR\+\_\+\+RED}} = "{}\textbackslash{}033\mbox{[}91m"{}
+\item 
+str \mbox{\hyperlink{namespacecli_a93a4049e836a2a323487c12f1ae5d446}{COLOR\+\_\+\+YELLOW}} = "{}\textbackslash{}033\mbox{[}93m"{}
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{namespacecli_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacecli_abd03877665d8dd3f485f589315964751}\index{cli@{cli}!main@{main}}
+\index{main@{main}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{namespacecli_abd03877665d8dd3f485f589315964751} 
+cli.\+main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Main function that initializes the CLI chat client. 
+
+Loads configuration, starts discovery and network processes, and runs an input loop. 
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00073}{73}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00073\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacemain}{main}}():}
+\DoxyCodeLine{00074\ \ \ \ \ cfg\_all\ =\ toml.load(CONFIG\_FILE)}
+\DoxyCodeLine{00075\ \ \ \ \ clients\ =\ cfg\_all.get(\textcolor{stringliteral}{"{}clients"{}},\ [])}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ clients:}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}No\ [[clients]]\ section\ found\ in\ config.toml."{}})}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ sys.exit(1)}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordflow}{if}\ len(sys.argv)\ !=\ 2:}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ handles\ =\ [c[\textcolor{stringliteral}{"{}handle"{}}]\ \textcolor{keywordflow}{for}\ c\ \textcolor{keywordflow}{in}\ clients]}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}Usage:\ python\ cli.py\ <Handle>"{}})}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}Available\ handles:"{}},\ \textcolor{stringliteral}{"{},\ "{}}.join(handles))}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ sys.exit(1)}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ chosen\ =\ sys.argv[1]}
+\DoxyCodeLine{00087\ \ \ \ \ client\_index\ =\ next((i\ \textcolor{keywordflow}{for}\ i,\ c\ \textcolor{keywordflow}{in}\ enumerate(clients)\ \textcolor{keywordflow}{if}\ c[\textcolor{stringliteral}{"{}handle"{}}]\ ==\ chosen),\ \textcolor{keywordtype}{None})}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordflow}{if}\ client\_index\ \textcolor{keywordflow}{is}\ \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}Handle\ '\{chosen\}'\ not\ found."{}})}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ sys.exit(1)}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{comment}{\#\ Prepare\ client\ configuration\ and\ shared\ state}}
+\DoxyCodeLine{00093\ \ \ \ \ config\ =\ clients[client\_index]}
+\DoxyCodeLine{00094\ \ \ \ \ manager\ =\ multiprocessing.Manager()}
+\DoxyCodeLine{00095\ \ \ \ \ config[\textcolor{stringliteral}{"{}peers"{}}]\ =\ manager.list()}
+\DoxyCodeLine{00096\ \ \ \ \ config[\textcolor{stringliteral}{"{}\_\_cfg\_all"{}}]\ =\ cfg\_all}
+\DoxyCodeLine{00097\ \ \ \ \ config[\textcolor{stringliteral}{"{}\_\_cfg\_index"{}}]\ =\ clients.index(config)}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{comment}{\#\ Inter-\/process\ communication\ pipes}}
+\DoxyCodeLine{00100\ \ \ \ \ ui2net\_p,\ ui2net\_c\ =\ multiprocessing.Pipe()}
+\DoxyCodeLine{00101\ \ \ \ \ net2ui\_p,\ net2ui\_c\ =\ multiprocessing.Pipe()}
+\DoxyCodeLine{00102\ \ \ \ \ disc\_ctrl\_parent,\ disc\_ctrl\_child\ =\ multiprocessing.Pipe()}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{comment}{\#\ Start\ discovery\ process\ if\ not\ already\ running}}
+\DoxyCodeLine{00105\ \ \ \ \ p\_disc\ =\ \textcolor{keywordtype}{None}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ port\_in\_use(config[\textcolor{stringliteral}{"{}whoisport"{}}]):}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ p\_disc\ =\ multiprocessing.Process(target=discovery\_process,\ args=(config,\ disc\_ctrl\_child))}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ p\_disc.start()}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[INFO]\ Discovery\ service\ started\ on\ port\ \{config['whoisport']\}"{}})}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[INFO]\ Discovery\ already\ running\ on\ port\ \{config['whoisport']\}"{}})}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{comment}{\#\ Start\ network\ process}}
+\DoxyCodeLine{00114\ \ \ \ \ p\_net\ =\ multiprocessing.Process(target=network\_process,\ args=(config,\ ui2net\_c,\ net2ui\_p))}
+\DoxyCodeLine{00115\ \ \ \ \ p\_net.start()}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ stop\_event\ =\ threading.Event()}
+\DoxyCodeLine{00118\ \ \ \ \ left\_peers\ =\ set()}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ }
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{def\ }poll\_network():}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keywordflow}{not}\ stop\_event.is\_set():}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ net2ui\_c.poll():}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ typ,\ src,\ payload\ =\ net2ui\_c.recv()}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ typ\ ==\ \textcolor{stringliteral}{'MSG'}:}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}\(\backslash\)n\{COLOR\_GREEN\}\{ts()\}\ [\{src\}]\ \{payload\}\{COLOR\_RESET\}\(\backslash\)n"{}})}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ typ\ ==\ \textcolor{stringliteral}{'IMG'}:}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}\(\backslash\)n\{COLOR\_YELLOW\}\{ts()\}\ [\{src\}]\ sent\ image\ →\ \{payload\}\{COLOR\_RESET\}\(\backslash\)n"{}})}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ typ\ ==\ \textcolor{stringliteral}{'LEAVE'}:}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ src\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ left\_peers:}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}\(\backslash\)n\{COLOR\_RED\}\{ts()\}\ [\{src\}]\ left\ the\ chat.\{COLOR\_RESET\}\(\backslash\)n"{}})}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ left\_peers.add(src)}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ config[\textcolor{stringliteral}{'peers'}][:]\ =\ [p\ \textcolor{keywordflow}{for}\ p\ \textcolor{keywordflow}{in}\ config[\textcolor{stringliteral}{'peers'}]\ \textcolor{keywordflow}{if}\ p[0]\ !=\ src]}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(0.05)}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \ \ threading.Thread(target=poll\_network,\ daemon=\textcolor{keyword}{True}).start()}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ \ \ print(f\textcolor{stringliteral}{"{}\(\backslash\)n==========\ SLCP\ CLI\ Chat\ started\ as\ '\{chosen\}'\ =========="{}})}
+\DoxyCodeLine{00140\ \ \ \ \ print\_commands()}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keyword}{True}:}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ cmd\ =\ input(\textcolor{stringliteral}{"{}>\ "{}}).strip()}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ cmd:}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ parts\ =\ cmd.split(\textcolor{stringliteral}{"{}\ "{}},\ 2)}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ action\ =\ parts[0].lower()}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ action\ ==\ \textcolor{stringliteral}{"{}leave"{}}:}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}Sending\ LEAVE..."{}})}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ui2net\_p.send((\textcolor{stringliteral}{"{}LEAVE"{}},\ \textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ p\_disc:}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ disc\_ctrl\_parent.send(\textcolor{stringliteral}{"{}STOP"{}})}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p\_disc.join()}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}[INFO]\ Discovery\ stopped."{}})}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ui2net\_p.send((\textcolor{stringliteral}{"{}EXIT"{}},\ \textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p\_net.join()}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ stop\_event.set()}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(0.1)}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ action\ ==\ \textcolor{stringliteral}{"{}clients"{}}:}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ peers\ =\ [(h,\ ip,\ pt)\ \textcolor{keywordflow}{for}\ (h,\ ip,\ pt)\ \textcolor{keywordflow}{in}\ config[\textcolor{stringliteral}{'peers'}]\ \textcolor{keywordflow}{if}\ h\ !=\ chosen]}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ peers:}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}No\ other\ clients\ found."{}})}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}\(\backslash\)nActive\ clients:"{}})}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (h,\ ip,\ pt)\ \textcolor{keywordflow}{in}\ peers:}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}\ \ \{h\}\ (\{ip\}:\{pt\})"{}})}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print()}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ action\ ==\ \textcolor{stringliteral}{"{}msg"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ >=\ 3:}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dest\ =\ parts[1]}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ msg\ =\ parts[2]}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ui2net\_p.send((\textcolor{stringliteral}{"{}MSG"{}},\ dest,\ msg))}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[SEND]\ to\ \{dest\}:\ \{msg\}"{}})}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ action\ ==\ \textcolor{stringliteral}{"{}img"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ >=\ 3:}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dest\ =\ parts[1]}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ path\ =\ parts[2]}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ os.path.isfile(path):}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[ERROR]\ File\ not\ found:\ \{path\}"{}})}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ui2net\_p.send((\textcolor{stringliteral}{"{}IMG"{}},\ dest,\ path))}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[SEND\ IMG]\ to\ \{dest\}:\ \{path\}"{}})}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ action\ ==\ \textcolor{stringliteral}{"{}afk"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ ==\ 2:}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mode\ =\ parts[1].lower()}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ mode\ \textcolor{keywordflow}{in}\ (\textcolor{stringliteral}{"{}on"{}},\ \textcolor{stringliteral}{"{}off"{}}):}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ui2net\_p.send((\textcolor{stringliteral}{"{}AFK"{}},\ chosen,\ mode.upper()))}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[AFK]\ set\ to\ \{mode.upper()\}"{}})}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}[ERROR]\ Usage:\ afk\ on|off"{}})}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ action\ ==\ \textcolor{stringliteral}{"{}help"{}}:}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print\_commands()}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}[ERROR]\ Unknown\ command.\ Type\ 'help'\ for\ commands."{}})}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(0.05)}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordflow}{finally}:}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ stop\_event.set()}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ time.sleep(0.1)}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ p\_disc:}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ disc\_ctrl\_parent.send(\textcolor{stringliteral}{"{}STOP"{}})}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ p\_disc.join()}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ ui2net\_p.send((\textcolor{stringliteral}{"{}EXIT"{}},\ \textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ p\_net.join()}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ }
+
+\end{DoxyCode}
+\Hypertarget{namespacecli_a701551963d42fa00ce915e318c6c3bfc}\index{cli@{cli}!port\_in\_use@{port\_in\_use}}
+\index{port\_in\_use@{port\_in\_use}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{port\_in\_use()}{port\_in\_use()}}
+{\footnotesize\ttfamily \label{namespacecli_a701551963d42fa00ce915e318c6c3bfc} 
+cli.\+port\+\_\+in\+\_\+use (\begin{DoxyParamCaption}\item[{}]{port}{}\end{DoxyParamCaption})}
+
+
+
+Checks if a UDP port is currently in use. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em port} & UDP port to test. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if in use, False otherwise. 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00052}{52}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00052\ \textcolor{keyword}{def\ }port\_in\_use(port):}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{with}\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)\ \textcolor{keyword}{as}\ s:}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ s.bind((\textcolor{stringliteral}{"{}"{}},\ port))}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ OSError:}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}}
+\DoxyCodeLine{00059\ }
+
+\end{DoxyCode}
+\Hypertarget{namespacecli_a8985492789245e09a948fb5b752d03da}\index{cli@{cli}!print\_commands@{print\_commands}}
+\index{print\_commands@{print\_commands}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{print\_commands()}{print\_commands()}}
+{\footnotesize\ttfamily \label{namespacecli_a8985492789245e09a948fb5b752d03da} 
+cli.\+print\+\_\+commands (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Prints a list of available CLI commands. 
+
+
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00062}{62}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00062\ \textcolor{keyword}{def\ }print\_commands():}
+\DoxyCodeLine{00063\ \ \ \ \ print(\textcolor{stringliteral}{"{}\(\backslash\)nAvailable\ commands:"{}})}
+\DoxyCodeLine{00064\ \ \ \ \ print(\textcolor{stringliteral}{"{}\ \ msg\ <handle>\ <text>"{}})}
+\DoxyCodeLine{00065\ \ \ \ \ print(\textcolor{stringliteral}{"{}\ \ img\ <handle>\ <path\_to\_image>"{}})}
+\DoxyCodeLine{00066\ \ \ \ \ print(\textcolor{stringliteral}{"{}\ \ clients"{}})}
+\DoxyCodeLine{00067\ \ \ \ \ print(\textcolor{stringliteral}{"{}\ \ afk\ on|off"{}})}
+\DoxyCodeLine{00068\ \ \ \ \ print(\textcolor{stringliteral}{"{}\ \ leave\(\backslash\)n"{}})}
+\DoxyCodeLine{00069\ }
+
+\end{DoxyCode}
+\Hypertarget{namespacecli_a83b773ef0d55a5629682c5a960c5367a}\index{cli@{cli}!ts@{ts}}
+\index{ts@{ts}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{ts()}{ts()}}
+{\footnotesize\ttfamily \label{namespacecli_a83b773ef0d55a5629682c5a960c5367a} 
+cli.\+ts (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Returns a formatted timestamp string. 
+
+
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00045}{45}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00045\ \textcolor{keyword}{def\ }ts():}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordflow}{return}\ datetime.now().strftime(\textcolor{stringliteral}{"{}[\%H:\%M:\%S]"{}})}
+\DoxyCodeLine{00047\ }
+
+\end{DoxyCode}
+
+
+\label{doc-var-members}
+\Hypertarget{namespacecli_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacecli_a31839bbe936d3cd82ffaf624e8fad2b7}\index{cli@{cli}!COLOR\_GREEN@{COLOR\_GREEN}}
+\index{COLOR\_GREEN@{COLOR\_GREEN}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{COLOR\_GREEN}{COLOR\_GREEN}}
+{\footnotesize\ttfamily \label{namespacecli_a31839bbe936d3cd82ffaf624e8fad2b7} 
+str cli.\+COLOR\+\_\+\+GREEN = "{}\textbackslash{}033\mbox{[}92m"{}}
+
+
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00039}{39}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+
+\Hypertarget{namespacecli_aae7123241d8e86b369fbfe2d35fd94fd}\index{cli@{cli}!COLOR\_RED@{COLOR\_RED}}
+\index{COLOR\_RED@{COLOR\_RED}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{COLOR\_RED}{COLOR\_RED}}
+{\footnotesize\ttfamily \label{namespacecli_aae7123241d8e86b369fbfe2d35fd94fd} 
+str cli.\+COLOR\+\_\+\+RED = "{}\textbackslash{}033\mbox{[}91m"{}}
+
+
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00040}{40}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+
+\Hypertarget{namespacecli_a4de3a9a0d544aa9a554cd273612457cb}\index{cli@{cli}!COLOR\_RESET@{COLOR\_RESET}}
+\index{COLOR\_RESET@{COLOR\_RESET}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{COLOR\_RESET}{COLOR\_RESET}}
+{\footnotesize\ttfamily \label{namespacecli_a4de3a9a0d544aa9a554cd273612457cb} 
+str cli.\+COLOR\+\_\+\+RESET = "{}\textbackslash{}033\mbox{[}0m"{}}
+
+
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00038}{38}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+
+\Hypertarget{namespacecli_a93a4049e836a2a323487c12f1ae5d446}\index{cli@{cli}!COLOR\_YELLOW@{COLOR\_YELLOW}}
+\index{COLOR\_YELLOW@{COLOR\_YELLOW}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{COLOR\_YELLOW}{COLOR\_YELLOW}}
+{\footnotesize\ttfamily \label{namespacecli_a93a4049e836a2a323487c12f1ae5d446} 
+str cli.\+COLOR\+\_\+\+YELLOW = "{}\textbackslash{}033\mbox{[}93m"{}}
+
+
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00041}{41}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+
+\Hypertarget{namespacecli_aa2f0bc9f8733fb8bb200a8ffea0d6b2d}\index{cli@{cli}!CONFIG\_FILE@{CONFIG\_FILE}}
+\index{CONFIG\_FILE@{CONFIG\_FILE}!cli@{cli}}
+\doxysubsubsection{\texorpdfstring{CONFIG\_FILE}{CONFIG\_FILE}}
+{\footnotesize\ttfamily \label{namespacecli_aa2f0bc9f8733fb8bb200a8ffea0d6b2d} 
+str cli.\+CONFIG\+\_\+\+FILE = "{}config.\+toml"{}}
+
+
+
+Definition at line \mbox{\hyperlink{cli_8py_source_l00035}{35}} of file \mbox{\hyperlink{cli_8py_source}{cli.\+py}}.
+

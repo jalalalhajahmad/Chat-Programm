@@ -1,0 +1,38 @@
+\doxysection{processes/discovery.py File Reference}
+\hypertarget{discovery_8py}{}\label{discovery_8py}\index{processes/discovery.py@{processes/discovery.py}}
+
+
+Peer discovery module for SLCP (Simple LAN Chat Protocol)  
+
+
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacediscovery}{discovery}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacediscovery_a06d648302b88b318bde507d62cc90754}{discovery.\+get\+\_\+local\+\_\+ip}} ()
+\begin{DoxyCompactList}\small\item\em Get the local machine\textquotesingle{}s IP address. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacediscovery_aca4b86e86f32d078edc0a0f08f426b76}{discovery.\+discovery\+\_\+process}} (config, ctrl\+\_\+pipe)
+\begin{DoxyCompactList}\small\item\em Main discovery process function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Peer discovery module for SLCP (Simple LAN Chat Protocol) 
+
+This module implements the decentralized peer discovery mechanism used by the SLCP chat application. It uses UDP broadcasting to detect other clients on the same network via {\ttfamily JOIN}, {\ttfamily WHO}, and {\ttfamily KNOWUSERS} messages. One process takes the role of a WHO responder and provides a list of all known clients upon request.
+
+The discovery process is run in a separate process and periodically sends discovery messages to update the local peer list.
+
+\begin{DoxyAuthor}{Author}
+Group SLCP 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+June 2025 
+\end{DoxyDate}
+
+
+Definition in file \mbox{\hyperlink{discovery_8py_source}{discovery.\+py}}.
+

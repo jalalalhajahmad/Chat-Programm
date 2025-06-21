@@ -1,0 +1,160 @@
+\doxysection{main Namespace Reference}
+\hypertarget{namespacemain}{}\label{namespacemain}\index{main@{main}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacemain_a28dc86c309d40a6d13d88c803b6699df}{port\+\_\+in\+\_\+use}} (port)
+\begin{DoxyCompactList}\small\item\em Checks whether the specified UDP port is already in use. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a92a3b3050a9d7415ea2add87edf7ef83}{save\+\_\+config\+\_\+to\+\_\+file}} (cfg\+\_\+all)
+\begin{DoxyCompactList}\small\item\em Saves the full client configuration back to the TOML file. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a3140e9a5b6a71ffbf498198cfc471b88}{main}} ()
+\begin{DoxyCompactList}\small\item\em Entry point for launching the GUI-\/based SLCP chat client. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{namespacemain_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacemain_a3140e9a5b6a71ffbf498198cfc471b88}\index{main@{main}!main@{main}}
+\index{main@{main}!main@{main}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{namespacemain_a3140e9a5b6a71ffbf498198cfc471b88} 
+main.\+main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Entry point for launching the GUI-\/based SLCP chat client. 
+
+Loads user configuration, initializes inter-\/process pipes, and spawns child processes. Waits for the GUI to terminate before performing graceful shutdown. 
+
+Definition at line \mbox{\hyperlink{main_8py_source_l00067}{67}} of file \mbox{\hyperlink{main_8py_source}{main.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00067\ \textcolor{keyword}{def\ }\mbox{\hyperlink{namespacemain}{main}}():}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{comment}{\#\ Load\ configuration\ from\ TOML\ file}}
+\DoxyCodeLine{00069\ \ \ \ \ cfg\_all\ =\ toml.load(\textcolor{stringliteral}{"{}config.toml"{}})}
+\DoxyCodeLine{00070\ \ \ \ \ clients\ =\ cfg\_all.get(\textcolor{stringliteral}{"{}clients"{}},\ [])}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ clients:}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}No\ [[clients]]\ section\ found\ in\ config.toml."{}})}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ sys.exit(1)}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{comment}{\#\ Ensure\ a\ handle\ argument\ is\ provided}}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{if}\ len(sys.argv)\ !=\ 2:}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ handles\ =\ [c[\textcolor{stringliteral}{"{}handle"{}}]\ \textcolor{keywordflow}{for}\ c\ \textcolor{keywordflow}{in}\ clients]}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}Usage:\ python\ main.py\ <Handle>"{}})}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}Available\ handles:"{}},\ \textcolor{stringliteral}{"{},\ "{}}.join(handles))}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ sys.exit(1)}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{comment}{\#\ Match\ provided\ handle\ to\ a\ client\ config}}
+\DoxyCodeLine{00083\ \ \ \ \ chosen\ =\ sys.argv[1]}
+\DoxyCodeLine{00084\ \ \ \ \ client\_index\ =\ next((i\ \textcolor{keywordflow}{for}\ i,\ c\ \textcolor{keywordflow}{in}\ enumerate(clients)\ \textcolor{keywordflow}{if}\ c[\textcolor{stringliteral}{"{}handle"{}}]\ ==\ chosen),\ \textcolor{keywordtype}{None})}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordflow}{if}\ client\_index\ \textcolor{keywordflow}{is}\ \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}Handle\ '\{chosen\}'\ not\ found."{}})}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ sys.exit(1)}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ config\ =\ clients[client\_index]}
+\DoxyCodeLine{00090\ \ \ \ \ manager\ =\ multiprocessing.Manager()}
+\DoxyCodeLine{00091\ \ \ \ \ config[\textcolor{stringliteral}{"{}peers"{}}]\ =\ manager.list()\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Shared\ list\ of\ known\ peers}}
+\DoxyCodeLine{00092\ \ \ \ \ config[\textcolor{stringliteral}{"{}\_\_cfg\_all"{}}]\ =\ cfg\_all\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Full\ config\ for\ saving\ later}}
+\DoxyCodeLine{00093\ \ \ \ \ config[\textcolor{stringliteral}{"{}\_\_cfg\_index"{}}]\ =\ clients.index(config)\ \ \textcolor{comment}{\#\ Index\ of\ this\ client\ in\ the\ TOML\ file}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{comment}{\#\ Create\ pipes\ for\ inter-\/process\ communication}}
+\DoxyCodeLine{00096\ \ \ \ \ ui2net\_p,\ ui2net\_c\ =\ multiprocessing.Pipe()\ \ \ \ \ \textcolor{comment}{\#\ GUI\ →\ Network}}
+\DoxyCodeLine{00097\ \ \ \ \ net2ui\_p,\ net2ui\_c\ =\ multiprocessing.Pipe()\ \ \ \ \ \textcolor{comment}{\#\ Network\ →\ GUI}}
+\DoxyCodeLine{00098\ \ \ \ \ disc\_ctrl\_parent,\ disc\_ctrl\_child\ =\ multiprocessing.Pipe()\ \ \textcolor{comment}{\#\ Main\ →\ Discovery\ (for\ stopping)}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{comment}{\#\ Start\ discovery\ process\ only\ if\ port\ is\ free}}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ port\_in\_use(config[\textcolor{stringliteral}{"{}whoisport"{}}]):}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ p\_disc\ =\ multiprocessing.Process(target=discovery\_process,\ args=(config,\ disc\_ctrl\_child))}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ p\_disc.start()}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[INFO]\ Discovery\ service\ started\ on\ port\ \{config['whoisport']\}"{}})}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ p\_disc\ =\ \textcolor{keywordtype}{None}}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[INFO]\ Discovery\ service\ already\ running\ on\ port\ \{config['whoisport']\},\ not\ starting\ again."{}})}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{comment}{\#\ Start\ network\ and\ GUI\ processes}}
+\DoxyCodeLine{00110\ \ \ \ \ p\_net\ =\ multiprocessing.Process(target=network\_process,\ args=(config,\ ui2net\_c,\ net2ui\_p))}
+\DoxyCodeLine{00111\ \ \ \ \ p\_gui\ =\ multiprocessing.Process(target=gui\_process,\ \ \ \ \ \ \ args=(config,\ ui2net\_p,\ net2ui\_c))}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ p\_net.start()}
+\DoxyCodeLine{00114\ \ \ \ \ p\_gui.start()}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{comment}{\#\ Wait\ for\ GUI\ process\ to\ exit\ (user\ closed\ window)}}
+\DoxyCodeLine{00117\ \ \ \ \ p\_gui.join()}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{comment}{\#\ Stop\ discovery\ process\ if\ we\ started\ it}}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordflow}{if}\ p\_disc:}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ disc\_ctrl\_parent.send(\textcolor{stringliteral}{"{}STOP"{}})}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ p\_disc.join()}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{comment}{\#\ Notify\ network\ process\ to\ exit\ cleanly}}
+\DoxyCodeLine{00125\ \ \ \ \ ui2net\_p.send((\textcolor{stringliteral}{"{}EXIT"{}},\ \textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00126\ \ \ \ \ p\_net.join()}
+\DoxyCodeLine{00127\ }
+
+\end{DoxyCode}
+\Hypertarget{namespacemain_a28dc86c309d40a6d13d88c803b6699df}\index{main@{main}!port\_in\_use@{port\_in\_use}}
+\index{port\_in\_use@{port\_in\_use}!main@{main}}
+\doxysubsubsection{\texorpdfstring{port\_in\_use()}{port\_in\_use()}}
+{\footnotesize\ttfamily \label{namespacemain_a28dc86c309d40a6d13d88c803b6699df} 
+main.\+port\+\_\+in\+\_\+use (\begin{DoxyParamCaption}\item[{}]{port}{}\end{DoxyParamCaption})}
+
+
+
+Checks whether the specified UDP port is already in use. 
+
+This function attempts to bind to the given port to detect conflicts.
+
+
+\begin{DoxyParams}{Parameters}
+{\em port} & UDP port number to test. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the port is currently in use, False if available. 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{main_8py_source_l00044}{44}} of file \mbox{\hyperlink{main_8py_source}{main.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00044\ \textcolor{keyword}{def\ }port\_in\_use(port):}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{with}\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)\ \textcolor{keyword}{as}\ s:}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ s.bind((\textcolor{stringliteral}{"{}"{}},\ port))\ \ \textcolor{comment}{\#\ Try\ to\ bind\ to\ the\ port}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{False}\ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Success:\ port\ not\ in\ use}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ OSError:}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{True}\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Port\ already\ in\ use}}
+\DoxyCodeLine{00051\ }
+
+\end{DoxyCode}
+\Hypertarget{namespacemain_a92a3b3050a9d7415ea2add87edf7ef83}\index{main@{main}!save\_config\_to\_file@{save\_config\_to\_file}}
+\index{save\_config\_to\_file@{save\_config\_to\_file}!main@{main}}
+\doxysubsubsection{\texorpdfstring{save\_config\_to\_file()}{save\_config\_to\_file()}}
+{\footnotesize\ttfamily \label{namespacemain_a92a3b3050a9d7415ea2add87edf7ef83} 
+main.\+save\+\_\+config\+\_\+to\+\_\+file (\begin{DoxyParamCaption}\item[{}]{cfg\+\_\+all}{}\end{DoxyParamCaption})}
+
+
+
+Saves the full client configuration back to the TOML file. 
+
+Used when users update settings via the GUI\textquotesingle{}s configuration dialog.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cfg\+\_\+all} & Full configuration dictionary (includes all \mbox{[}\mbox{[}clients\mbox{]}\mbox{]}). \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{main_8py_source_l00058}{58}} of file \mbox{\hyperlink{main_8py_source}{main.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00058\ \textcolor{keyword}{def\ }save\_config\_to\_file(cfg\_all):}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{with}\ open(\textcolor{stringliteral}{"{}config.toml"{}},\ \textcolor{stringliteral}{"{}w"{}})\ \textcolor{keyword}{as}\ f:}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ toml.dump(cfg\_all,\ f)}
+\DoxyCodeLine{00061\ }
+
+\end{DoxyCode}

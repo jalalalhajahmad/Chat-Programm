@@ -1,0 +1,214 @@
+\doxysection{gui.\+Settings\+Dialog Class Reference}
+\hypertarget{classgui_1_1_settings_dialog}{}\label{classgui_1_1_settings_dialog}\index{gui.SettingsDialog@{gui.SettingsDialog}}
+
+
+Dialog window for editing and saving user configuration.  
+
+
+Inheritance diagram for gui.\+Settings\+Dialog\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classgui_1_1_settings_dialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgui_1_1_settings_dialog_a8018f6296b5022e435d41bcd3c20ad92}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, \mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}, parent=None)
+\begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classgui_1_1_settings_dialog}{Settings\+Dialog}. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classgui_1_1_settings_dialog_a237294f34dac07e66b6d57f90c27d5ba}{save}} (self)
+\begin{DoxyCompactList}\small\item\em Validate and persist user configuration to disk. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgui_1_1_settings_dialog_a02443323125709acab94574af8e630d2}{handle\+\_\+field}} = QLine\+Edit(\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}\mbox{[}"{}handle"{}\mbox{]})
+\item 
+\mbox{\hyperlink{classgui_1_1_settings_dialog_ab40416d5762ca7a55c2dd66d6a3f7da0}{port\+\_\+field}} = QLine\+Edit(str(\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}\mbox{[}"{}port"{}\mbox{]}\mbox{[}0\mbox{]}))
+\item 
+\mbox{\hyperlink{classgui_1_1_settings_dialog_a1dc4a1396dadfe6a1e4e334c0ceeaeb6}{autoreply\+\_\+field}} = QLine\+Edit(\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}\mbox{[}"{}autoreply"{}\mbox{]})
+\item 
+\mbox{\hyperlink{classgui_1_1_settings_dialog_a256476a5469f5ed26f7faa3cb7dc4f6d}{imagepath\+\_\+field}} = QLine\+Edit(\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}\mbox{[}"{}imagepath"{}\mbox{]})
+\item 
+\mbox{\hyperlink{classgui_1_1_settings_dialog_a76d92a810743fb3a064e0e56d68140d7}{save}}
+\item 
+\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}} = config
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Dialog window for editing and saving user configuration. 
+
+Provides editable fields for handle, port, autoreply message, and image directory. Saves updated values directly into the configuration TOML file and notifies the user. 
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00084}{84}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+
+
+\label{doc-constructors}
+\Hypertarget{classgui_1_1_settings_dialog_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classgui_1_1_settings_dialog_a8018f6296b5022e435d41bcd3c20ad92}\index{gui.SettingsDialog@{gui.SettingsDialog}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!gui.SettingsDialog@{gui.SettingsDialog}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classgui_1_1_settings_dialog_a8018f6296b5022e435d41bcd3c20ad92} 
+gui.\+Settings\+Dialog.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{config}{, }\item[{}]{parent}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+
+
+Constructor for \doxylink{classgui_1_1_settings_dialog}{Settings\+Dialog}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & Reference to the active client configuration. \\
+\hline
+{\em parent} & Parent QWidget, if any. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00089}{89}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{def\ }\_\_init\_\_(self,\ config,\ parent=None):}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ super().\_\_init\_\_(parent)}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ self.setWindowTitle(\textcolor{stringliteral}{"{}Settings"{}})}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ layout\ =\ QFormLayout(self)}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ self.handle\_field\ =\ QLineEdit(config[\textcolor{stringliteral}{"{}handle"{}}])}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ self.port\_field\ =\ QLineEdit(str(config[\textcolor{stringliteral}{"{}port"{}}][0]))}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ self.autoreply\_field\ =\ QLineEdit(config[\textcolor{stringliteral}{"{}autoreply"{}}])}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ self.imagepath\_field\ =\ QLineEdit(config[\textcolor{stringliteral}{"{}imagepath"{}}])}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ layout.addRow(\textcolor{stringliteral}{"{}Handle:"{}},\ self.handle\_field)}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ layout.addRow(\textcolor{stringliteral}{"{}Port:"{}},\ self.port\_field)}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ layout.addRow(\textcolor{stringliteral}{"{}Autoreply:"{}},\ self.autoreply\_field)}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ layout.addRow(\textcolor{stringliteral}{"{}Image-\/Ordner:"{}},\ self.imagepath\_field)}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ save\_btn\ =\ QPushButton(\textcolor{stringliteral}{"{}Save"{}})}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ save\_btn.clicked.connect(self.save)}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ layout.addWidget(save\_btn)}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ self.config\ =\ config}
+\DoxyCodeLine{00109\ }
+
+\end{DoxyCode}
+
+
+\label{doc-func-members}
+\Hypertarget{classgui_1_1_settings_dialog_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classgui_1_1_settings_dialog_a237294f34dac07e66b6d57f90c27d5ba}\index{gui.SettingsDialog@{gui.SettingsDialog}!save@{save}}
+\index{save@{save}!gui.SettingsDialog@{gui.SettingsDialog}}
+\doxysubsubsection{\texorpdfstring{save()}{save()}}
+{\footnotesize\ttfamily \label{classgui_1_1_settings_dialog_a237294f34dac07e66b6d57f90c27d5ba} 
+gui.\+Settings\+Dialog.\+save (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Validate and persist user configuration to disk. 
+
+Updates local config dictionary and re-\/writes the TOML file. Informs user via message box on success or error. 
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00115}{115}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{def\ }save(self):}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ self.config[\textcolor{stringliteral}{"{}handle"{}}]\ =\ self.handle\_field.text()}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ self.config[\textcolor{stringliteral}{"{}port"{}}][0]\ =\ int(self.port\_field.text())}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ self.config[\textcolor{stringliteral}{"{}autoreply"{}}]\ =\ self.autoreply\_field.text()}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ self.config[\textcolor{stringliteral}{"{}imagepath"{}}]\ =\ self.imagepath\_field.text()}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ os.makedirs(self.config[\textcolor{stringliteral}{"{}imagepath"{}}],\ exist\_ok=\textcolor{keyword}{True})}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ all\_cfg\ =\ self.config[\textcolor{stringliteral}{"{}\_\_cfg\_all"{}}]}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ index\ =\ self.config[\textcolor{stringliteral}{"{}\_\_cfg\_index"{}}]}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ clean\_config\ =\ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ k:\ v\ \textcolor{keywordflow}{for}\ k,\ v\ \textcolor{keywordflow}{in}\ self.config.items()}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ k\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ (\textcolor{stringliteral}{"{}peers"{}},\ \textcolor{stringliteral}{"{}\_\_cfg\_all"{}},\ \textcolor{stringliteral}{"{}\_\_cfg\_index"{}})}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ all\_cfg[\textcolor{stringliteral}{"{}clients"{}}][index]\ =\ clean\_config}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{with}\ open(\textcolor{stringliteral}{"{}config.toml"{}},\ \textcolor{stringliteral}{"{}w"{}})\ \textcolor{keyword}{as}\ f:}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ toml.dump(all\_cfg,\ f)}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ QMessageBox.information(self,\ \textcolor{stringliteral}{"{}Saved"{}},\ \textcolor{stringliteral}{"{}Configuration\ saved.\ Please\ restart\ the\ program."{}})}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ self.accept()}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ Exception\ \textcolor{keyword}{as}\ e:}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ QMessageBox.warning(self,\ \textcolor{stringliteral}{"{}Error"{}},\ f\textcolor{stringliteral}{"{}Invalid\ input:\ \{e\}"{}})}
+\DoxyCodeLine{00140\ }
+
+\end{DoxyCode}
+
+
+\label{doc-variable-members}
+\Hypertarget{classgui_1_1_settings_dialog_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classgui_1_1_settings_dialog_a1dc4a1396dadfe6a1e4e334c0ceeaeb6}\index{gui.SettingsDialog@{gui.SettingsDialog}!autoreply\_field@{autoreply\_field}}
+\index{autoreply\_field@{autoreply\_field}!gui.SettingsDialog@{gui.SettingsDialog}}
+\doxysubsubsection{\texorpdfstring{autoreply\_field}{autoreply\_field}}
+{\footnotesize\ttfamily \label{classgui_1_1_settings_dialog_a1dc4a1396dadfe6a1e4e334c0ceeaeb6} 
+gui.\+Settings\+Dialog.\+autoreply\+\_\+field = QLine\+Edit(\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}\mbox{[}"{}autoreply"{}\mbox{]})}
+
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00096}{96}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+\Hypertarget{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}\index{gui.SettingsDialog@{gui.SettingsDialog}!config@{config}}
+\index{config@{config}!gui.SettingsDialog@{gui.SettingsDialog}}
+\doxysubsubsection{\texorpdfstring{config}{config}}
+{\footnotesize\ttfamily \label{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c} 
+gui.\+Settings\+Dialog.\+config = config}
+
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00108}{108}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+\Hypertarget{classgui_1_1_settings_dialog_a02443323125709acab94574af8e630d2}\index{gui.SettingsDialog@{gui.SettingsDialog}!handle\_field@{handle\_field}}
+\index{handle\_field@{handle\_field}!gui.SettingsDialog@{gui.SettingsDialog}}
+\doxysubsubsection{\texorpdfstring{handle\_field}{handle\_field}}
+{\footnotesize\ttfamily \label{classgui_1_1_settings_dialog_a02443323125709acab94574af8e630d2} 
+gui.\+Settings\+Dialog.\+handle\+\_\+field = QLine\+Edit(\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}\mbox{[}"{}handle"{}\mbox{]})}
+
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00094}{94}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+\Hypertarget{classgui_1_1_settings_dialog_a256476a5469f5ed26f7faa3cb7dc4f6d}\index{gui.SettingsDialog@{gui.SettingsDialog}!imagepath\_field@{imagepath\_field}}
+\index{imagepath\_field@{imagepath\_field}!gui.SettingsDialog@{gui.SettingsDialog}}
+\doxysubsubsection{\texorpdfstring{imagepath\_field}{imagepath\_field}}
+{\footnotesize\ttfamily \label{classgui_1_1_settings_dialog_a256476a5469f5ed26f7faa3cb7dc4f6d} 
+gui.\+Settings\+Dialog.\+imagepath\+\_\+field = QLine\+Edit(\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}\mbox{[}"{}imagepath"{}\mbox{]})}
+
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00097}{97}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+\Hypertarget{classgui_1_1_settings_dialog_ab40416d5762ca7a55c2dd66d6a3f7da0}\index{gui.SettingsDialog@{gui.SettingsDialog}!port\_field@{port\_field}}
+\index{port\_field@{port\_field}!gui.SettingsDialog@{gui.SettingsDialog}}
+\doxysubsubsection{\texorpdfstring{port\_field}{port\_field}}
+{\footnotesize\ttfamily \label{classgui_1_1_settings_dialog_ab40416d5762ca7a55c2dd66d6a3f7da0} 
+gui.\+Settings\+Dialog.\+port\+\_\+field = QLine\+Edit(str(\mbox{\hyperlink{classgui_1_1_settings_dialog_a617c48b785a64934fd27abdeff7f4d1c}{config}}\mbox{[}"{}port"{}\mbox{]}\mbox{[}0\mbox{]}))}
+
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00095}{95}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+\Hypertarget{classgui_1_1_settings_dialog_a76d92a810743fb3a064e0e56d68140d7}\index{gui.SettingsDialog@{gui.SettingsDialog}!save@{save}}
+\index{save@{save}!gui.SettingsDialog@{gui.SettingsDialog}}
+\doxysubsubsection{\texorpdfstring{save}{save}}
+{\footnotesize\ttfamily \label{classgui_1_1_settings_dialog_a76d92a810743fb3a064e0e56d68140d7} 
+gui.\+Settings\+Dialog.\+save}
+
+
+
+Definition at line \mbox{\hyperlink{gui_8py_source_l00105}{105}} of file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+processes/\mbox{\hyperlink{gui_8py}{gui.\+py}}\end{DoxyCompactItemize}

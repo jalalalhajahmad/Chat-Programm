@@ -1,0 +1,65 @@
+\doxysection{processes/gui.py File Reference}
+\hypertarget{gui_8py}{}\label{gui_8py}\index{processes/gui.py@{processes/gui.py}}
+
+
+Graphical User Interface (GUI) for SLCP Chat.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgui_1_1_settings_dialog}{gui.\+Settings\+Dialog}}
+\begin{DoxyCompactList}\small\item\em Dialog window for editing and saving user configuration. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacegui}{gui}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacegui_af9f6976b4463db5432611939ae149165}{gui.\+ts}} ()
+\begin{DoxyCompactList}\small\item\em Generate a timestamp string for message labeling. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacegui_a2f060f2999f2eea96b81b78651f23ca2}{gui.\+open\+\_\+file}} (path)
+\begin{DoxyCompactList}\small\item\em Open a file with the default system application. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacegui_aaf4e5f7b99fb4720e1c09d9408746196}{gui.\+get\+\_\+local\+\_\+ip}} ()
+\begin{DoxyCompactList}\small\item\em Get the current machine\textquotesingle{}s local IP address. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacegui_a49dc5a1f5d0afc6fc98577c924372216}{gui.\+gui\+\_\+process}} (config, to\+\_\+network, from\+\_\+network)
+\begin{DoxyCompactList}\small\item\em Launches the SLCP GUI as a separate process. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{namespacegui_a725e71dc4cca328655738aa0e9f1c75c}{gui.\+MAX\+\_\+\+DISPLAY\+\_\+\+CHUNK}} = 200
+\item 
+str \mbox{\hyperlink{namespacegui_a323c82f638a4ff368e735b52c7f7939d}{gui.\+CONFIG\+\_\+\+FILE}} = "{}config.\+toml"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Graphical User Interface (GUI) for SLCP Chat. 
+
+This module provides a complete graphical frontend for the SLCP (Simple LAN Chat Protocol) client. It allows users to send and receive messages and images, manage peer visibility, toggle AFK (away-\/from-\/keyboard) mode, access configuration settings, and quit the session gracefully.
+
+Communication with the network and discovery processes is handled via multiprocessing pipes. Built using Py\+Qt5 and styled optionally using QDark\+Style.
+
+Key GUI Features\+:
+\begin{DoxyItemize}
+\item Display chat log with timestamps and color-\/coded messages
+\item Input fields for recipient and message
+\item Send image button (opens file dialog)
+\item View active clients
+\item AFK mode toggle with autoreply functionality
+\item Dark mode toggle
+\item In-\/app configuration management
+\end{DoxyItemize}
+
+\begin{DoxyAuthor}{Author}
+SLCP Team 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+June 2025 
+\end{DoxyDate}
+
+
+Definition in file \mbox{\hyperlink{gui_8py_source}{gui.\+py}}.
+

@@ -1,3 +1,25 @@
+##
+# @file cli.py
+# @brief Command-line interface for SLCP peer-to-peer chat.
+#
+# This CLI allows users to start a chat client, send messages and images, toggle AFK mode,
+# and list active peers on the network. It communicates with discovery and network subprocesses
+# and uses inter-process communication (IPC) pipes to send and receive events.
+#
+# @section features_sec Features
+# - Text and image messaging
+# - Peer discovery
+# - AFK autoreply toggle
+# - Dynamic client configuration from config.toml
+#
+# @section usage_sec Usage
+# Run the CLI as:
+# @code
+# python cli.py <Handle>
+# @endcode
+# The handle must be defined in `config.toml`.
+#
+
 import socket
 import os
 import multiprocessing
@@ -12,15 +34,21 @@ from processes.network import network_process
 
 CONFIG_FILE = "config.toml"
 
-# Farben
+# ANSI escape codes for terminal colors
 COLOR_RESET  = "\033[0m"
 COLOR_GREEN  = "\033[92m"
 COLOR_RED    = "\033[91m"
 COLOR_YELLOW = "\033[93m"
 
+##
+# @brief Returns a formatted timestamp string.
 def ts():
     return datetime.now().strftime("[%H:%M:%S]")
 
+##
+# @brief Checks if a UDP port is currently in use.
+# @param port UDP port to test.
+# @return True if in use, False otherwise.
 def port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         try:
@@ -29,6 +57,8 @@ def port_in_use(port):
         except OSError:
             return True
 
+##
+# @brief Prints a list of available CLI commands.
 def print_commands():
     print("\nAvailable commands:")
     print("  msg <handle> <text>")
@@ -37,6 +67,9 @@ def print_commands():
     print("  afk on|off")
     print("  leave\n")
 
+##
+# @brief Main function that initializes the CLI chat client.
+# Loads configuration, starts discovery and network processes, and runs an input loop.
 def main():
     cfg_all = toml.load(CONFIG_FILE)
     clients = cfg_all.get("clients", [])
@@ -56,16 +89,19 @@ def main():
         print(f"Handle '{chosen}' not found.")
         sys.exit(1)
 
+    # Prepare client configuration and shared state
     config = clients[client_index]
     manager = multiprocessing.Manager()
     config["peers"] = manager.list()
     config["__cfg_all"] = cfg_all
     config["__cfg_index"] = clients.index(config)
 
+    # Inter-process communication pipes
     ui2net_p, ui2net_c = multiprocessing.Pipe()
     net2ui_p, net2ui_c = multiprocessing.Pipe()
     disc_ctrl_parent, disc_ctrl_child = multiprocessing.Pipe()
 
+    # Start discovery process if not already running
     p_disc = None
     if not port_in_use(config["whoisport"]):
         p_disc = multiprocessing.Process(target=discovery_process, args=(config, disc_ctrl_child))
@@ -74,12 +110,15 @@ def main():
     else:
         print(f"[INFO] Discovery already running on port {config['whoisport']}")
 
+    # Start network process
     p_net = multiprocessing.Process(target=network_process, args=(config, ui2net_c, net2ui_p))
     p_net.start()
 
     stop_event = threading.Event()
     left_peers = set()
 
+    ##
+    # @brief Polls the network process for incoming messages and handles them.
     def poll_network():
         while not stop_event.is_set():
             while net2ui_c.poll():
@@ -111,7 +150,6 @@ def main():
 
             if action == "leave":
                 print("Sending LEAVE...")
-                
                 ui2net_p.send(("LEAVE", "", ""))
 
                 if p_disc:
@@ -121,10 +159,8 @@ def main():
 
                 ui2net_p.send(("EXIT", "", ""))
                 p_net.join()
-
                 stop_event.set()
                 time.sleep(0.1)
-
                 break
 
             elif action == "clients":

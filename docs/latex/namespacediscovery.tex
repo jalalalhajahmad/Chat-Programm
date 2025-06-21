@@ -1,0 +1,171 @@
+\doxysection{discovery Namespace Reference}
+\hypertarget{namespacediscovery}{}\label{namespacediscovery}\index{discovery@{discovery}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacediscovery_a06d648302b88b318bde507d62cc90754}{get\+\_\+local\+\_\+ip}} ()
+\begin{DoxyCompactList}\small\item\em Get the local machine\textquotesingle{}s IP address. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacediscovery_aca4b86e86f32d078edc0a0f08f426b76}{discovery\+\_\+process}} (config, ctrl\+\_\+pipe)
+\begin{DoxyCompactList}\small\item\em Main discovery process function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{namespacediscovery_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacediscovery_aca4b86e86f32d078edc0a0f08f426b76}\index{discovery@{discovery}!discovery\_process@{discovery\_process}}
+\index{discovery\_process@{discovery\_process}!discovery@{discovery}}
+\doxysubsubsection{\texorpdfstring{discovery\_process()}{discovery\_process()}}
+{\footnotesize\ttfamily \label{namespacediscovery_aca4b86e86f32d078edc0a0f08f426b76} 
+discovery.\+discovery\+\_\+process (\begin{DoxyParamCaption}\item[{}]{config}{, }\item[{}]{ctrl\+\_\+pipe}{}\end{DoxyParamCaption})}
+
+
+
+Main discovery process function. 
+
+This function is designed to run in its own multiprocessing process. It listens and sends UDP broadcasts to discover peers on the network. It maintains a list of active peers by interpreting SLCP commands like\+:
+\begin{DoxyItemize}
+\item {\ttfamily JOIN} (a peer has joined),
+\item {\ttfamily LEAVE} (a peer has left),
+\item {\ttfamily WHO} (a peer is asking who is online),
+\item {\ttfamily KNOWUSERS} (a reply containing known peers).
+\end{DoxyItemize}
+
+One client that successfully binds to the discovery port acts as the WHO responder. The process listens to a control pipe for termination.
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & A shared dictionary (Manager.\+dict) containing client configuration and a shared peer list. Required fields\+: {\ttfamily handle}, {\ttfamily port}, {\ttfamily whoisport}, {\ttfamily peers}. \\
+\hline
+{\em ctrl\+\_\+pipe} & A multiprocessing pipe used by the main process to send control signals (e.\+g., "{}\+STOP"{}). \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{discovery_8py_source_l00051}{51}} of file \mbox{\hyperlink{discovery_8py_source}{discovery.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00051\ \textcolor{keyword}{def\ }discovery\_process(config,\ ctrl\_pipe):}
+\DoxyCodeLine{00052\ \ \ \ \ handle\ \ \ \ =\ config[\textcolor{stringliteral}{"{}handle"{}}]}
+\DoxyCodeLine{00053\ \ \ \ \ port\ \ \ \ \ \ =\ config[\textcolor{stringliteral}{"{}port"{}}][0]}
+\DoxyCodeLine{00054\ \ \ \ \ whoisport\ =\ config[\textcolor{stringliteral}{"{}whoisport"{}}]}
+\DoxyCodeLine{00055\ \ \ \ \ peers\ \ \ \ \ =\ config[\textcolor{stringliteral}{"{}peers"{}}]}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ responder\ =\ \textcolor{keyword}{False}\ \ \textcolor{comment}{\#\ Only\ one\ client\ becomes\ WHO\ responder}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ sock\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)}
+\DoxyCodeLine{00060\ \ \ \ \ sock.setsockopt(socket.SOL\_SOCKET,\ socket.SO\_BROADCAST,\ 1)}
+\DoxyCodeLine{00061\ \ \ \ \ sock.setsockopt(socket.SOL\_SOCKET,\ socket.SO\_REUSEADDR,\ 1)}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ sock.bind((\textcolor{stringliteral}{"{}"{}},\ whoisport))}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ responder\ =\ \textcolor{keyword}{True}}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[Discovery]\ WHO\ responder\ active\ on\ \{whoisport\}"{}})}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordflow}{except}\ OSError\ \textcolor{keyword}{as}\ e:}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[Discovery]\ Not\ WHO\ responder\ –\ \{e\}"{}})}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ sock.settimeout(1.0)}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{def\ }broadcast(msg:\ str):}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ sock.sendto(msg.encode(\textcolor{stringliteral}{"{}utf-\/8"{}}),\ (\textcolor{stringliteral}{"{}255.255.255.255"{}},\ whoisport))}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keyword}{True}:}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ stop\ command\ from\ main\ process}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ctrl\_pipe.poll():}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ cmd\ =\ ctrl\_pipe.recv()}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ cmd\ ==\ \textcolor{stringliteral}{"{}STOP"{}}:}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}[Discovery]\ Terminated\ by\ main\ process."{}})}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Broadcast\ JOIN\ and\ WHO\ messages}}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ broadcast(f\textcolor{stringliteral}{"{}JOIN\ \{handle\}\ \{port\}\(\backslash\)n"{}})}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ broadcast(\textcolor{stringliteral}{"{}WHO\(\backslash\)n"{}})}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ start\ =\ time.time()}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ time.time()\ -\/\ start\ <\ 1.0:}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ data,\ addr\ =\ sock.recvfrom(4096)}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ socket.timeout:}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ text\ =\ data.decode(\textcolor{stringliteral}{"{}utf-\/8"{}}).strip()}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ UnicodeDecodeError:}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ text:}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ parts\ =\ text.split()}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ cmd\ =\ parts[0]}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ JOIN\ message:\ add\ new\ peer}}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ cmd\ ==\ \textcolor{stringliteral}{"{}JOIN"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ ==\ 3:}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ peer,\ pport\ =\ parts[1],\ int(parts[2])}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ entry\ =\ (peer,\ addr[0],\ pport)}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ peer\ !=\ handle\ \textcolor{keywordflow}{and}\ entry\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ peers:}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ peers.append(entry)}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[Discovery]\ New\ peer\ detected:\ \{entry\}"{}})}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ LEAVE\ message:\ remove\ peer}}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}LEAVE"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ ==\ 2:}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ peer\ =\ parts[1]}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ peers[:]\ =\ [p\ \textcolor{keywordflow}{for}\ p\ \textcolor{keywordflow}{in}\ peers\ \textcolor{keywordflow}{if}\ p[0]\ !=\ peer]}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ WHO\ request:\ respond\ with\ known\ users}}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}WHO"{}}\ \textcolor{keywordflow}{and}\ responder:}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ all\_known\ =\ [(handle,\ get\_local\_ip(),\ port)]\ +\ list(peers)}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ payload\ =\ \textcolor{stringliteral}{"{},"{}}.join(f\textcolor{stringliteral}{"{}\{h\}\ \{ip\}\ \{pt\}"{}}\ \textcolor{keywordflow}{for}\ h,\ ip,\ pt\ \textcolor{keywordflow}{in}\ all\_known)}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sock.sendto(f\textcolor{stringliteral}{"{}KNOWUSERS\ \{payload\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}}),\ addr)}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ KNOWUSERS\ response:\ merge\ peer\ list}}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}KNOWUSERS"{}}:}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ rest\ =\ text[len(\textcolor{stringliteral}{"{}KNOWUSERS\ "{}}):]}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ chunk\ \textcolor{keywordflow}{in}\ rest.split(\textcolor{stringliteral}{','}):}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ chunk.strip():}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ h,\ ip,\ pt\ =\ chunk.strip().split()}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ entry\ =\ (h,\ ip,\ int(pt))}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ h\ !=\ handle\ \textcolor{keywordflow}{and}\ entry\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ peers:}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ peers.append(entry)}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ ValueError:}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ time.sleep(3)}
+
+\end{DoxyCode}
+\Hypertarget{namespacediscovery_a06d648302b88b318bde507d62cc90754}\index{discovery@{discovery}!get\_local\_ip@{get\_local\_ip}}
+\index{get\_local\_ip@{get\_local\_ip}!discovery@{discovery}}
+\doxysubsubsection{\texorpdfstring{get\_local\_ip()}{get\_local\_ip()}}
+{\footnotesize\ttfamily \label{namespacediscovery_a06d648302b88b318bde507d62cc90754} 
+discovery.\+get\+\_\+local\+\_\+ip (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Get the local machine\textquotesingle{}s IP address. 
+
+This utility function connects to a known external IP (Google DNS) to determine the outbound interface. If no connection is possible, falls back to loopback.
+
+\begin{DoxyReturn}{Returns}
+A string representing the local IP address. 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{discovery_8py_source_l00025}{25}} of file \mbox{\hyperlink{discovery_8py_source}{discovery.\+py}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00025\ \textcolor{keyword}{def\ }get\_local\_ip():}
+\DoxyCodeLine{00026\ \ \ \ \ s\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ s.connect((\textcolor{stringliteral}{"{}8.8.8.8"{}},\ 80))}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ s.getsockname()[0]}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordflow}{except}\ Exception:}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}127.0.0.1"{}}}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordflow}{finally}:}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ s.close()}
+\DoxyCodeLine{00034\ }
+
+\end{DoxyCode}
