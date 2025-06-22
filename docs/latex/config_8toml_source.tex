@@ -1,0 +1,50 @@
+\doxysection{config.\+toml}
+\hypertarget{config_8toml_source}{}\label{config_8toml_source}\mbox{\hyperlink{config_8toml}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00001}00001\ \#\#}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00002}00002\ \#\ @file\ config.toml}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00003}00003\ \#\ @brief\ Configuration\ file\ for\ SLCP\ clients.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00004}00004\ \#}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00005}00005\ \#\ This\ configuration\ file\ defines\ the\ list\ of\ available\ clients\ for\ the}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00006}00006\ \#\ SLCP\ peer-\/to-\/peer\ chat\ application.\ Each\ client\ section\ contains}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00007}00007\ \#\ the\ networking\ and\ UI\ preferences\ used\ to\ start\ an\ instance.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00008}00008\ \#}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00009}00009\ \#\ @section\ format\_sec\ Format}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00010}00010\ \#\ The\ file\ uses\ the\ TOML\ format\ and\ contains\ a\ list\ of\ [[clients]]\ tables.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00011}00011\ \#}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00012}00012\ \#\ @section\ fields\_sec\ Fields}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00013}00013\ \#\ -\/\ handle:\ Unique\ name/identifier\ for\ the\ client.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00014}00014\ \#\ -\/\ port:\ List\ of\ two\ ports.\ First\ is\ the\ UDP\ port\ for\ peer\ communication,}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00015}00015\ \#\ \ \ \ \ \ \ \ \ second\ is\ typically\ used\ for\ image\ transfer\ (or\ a\ reserved\ fallback).}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00016}00016\ \#\ -\/\ whoisport:\ Broadcast\ port\ used\ for\ WHO\ and\ JOIN\ messages.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00017}00017\ \#\ -\/\ autoreply:\ Message\ sent\ automatically\ when\ the\ user\ is\ AFK.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00018}00018\ \#\ -\/\ away:\ Boolean\ flag\ indicating\ whether\ the\ user\ starts\ in\ AFK\ mode.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00019}00019\ \#\ -\/\ imagepath:\ Path\ to\ the\ local\ folder\ where\ received\ images\ will\ be\ stored.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00020}00020\ \#}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00021}00021\ \#\ @note\ All\ clients\ share\ the\ same\ whoisport\ for\ discovery\ purposes.}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00022}00022\ }
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00023}00023\ [[clients]]}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00024}00024\ handle\ =\ "{}Aashir"{}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Unique\ name\ for\ the\ client}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00025}00025\ port\ =\ [\ 5008,\ 6000\ ]\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ UDP\ port\ for\ chat,\ secondary\ port}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00026}00026\ whoisport\ =\ 4000\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Broadcast\ port\ for\ WHO/JOIN\ messages}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00027}00027\ autoreply\ =\ "{}in\ einer\ Stunde\ da"{}\ \ \ \ \ \#\ AFK\ auto-\/response\ message}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00028}00028\ away\ =\ false\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Whether\ the\ client\ is\ initially\ AFK}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00029}00029\ imagepath\ =\ "{}./images/aashir"{}\ \ \ \ \ \ \ \ \#\ Directory\ for\ storing\ received\ images}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00030}00030\ }
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00031}00031\ [[clients]]}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00032}00032\ handle\ =\ "{}Bratli"{}}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00033}00033\ port\ =\ [\ 5004,\ 6000\ ]}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00034}00034\ whoisport\ =\ 4000}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00035}00035\ autoreply\ =\ "{}Bin\ AFK."{}}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00036}00036\ away\ =\ false}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00037}00037\ imagepath\ =\ "{}./images/bratli"{}}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00038}00038\ }
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00039}00039\ [[clients]]}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00040}00040\ handle\ =\ "{}Jalal"{}}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00041}00041\ port\ =\ [\ 5005,\ 6000\ ]}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00042}00042\ whoisport\ =\ 4000}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00043}00043\ autoreply\ =\ "{}Bin\ in\ 10\ Minuten\ wieder\ da."{}}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00044}00044\ away\ =\ false}
+\DoxyCodeLine{\Hypertarget{config_8toml_source_l00045}00045\ imagepath\ =\ "{}./images/jalal"{}}
+
+\end{DoxyCode}

@@ -25,23 +25,32 @@
 var NAVTREE =
 [
   [ "ChatProgramm_Final", "index.html", [
-    [ "Project Overview", "index.html#autotoc_md1", null ],
-    [ "Features", "index.html#autotoc_md3", null ],
-    [ "Architecture", "index.html#autotoc_md5", [
-      [ "Core Modules", "index.html#autotoc_md6", null ]
+    [ "Project Description", "index.html#autotoc_md1", [
+      [ "Challenges Faced", "index.html#autotoc_md2", null ]
     ] ],
-    [ "Team and Responsibilities", "index.html#autotoc_md8", null ],
-    [ "Installation &amp; Setup", "index.html#autotoc_md10", [
-      [ "1. Install Dependencies", "index.html#autotoc_md11", null ],
-      [ "2. Configure Clients", "index.html#autotoc_md13", null ],
-      [ "3. Launch the Application", "index.html#autotoc_md15", null ],
-      [ "4. GUI Controls", "index.html#autotoc_md17", null ]
+    [ "Features", "index.html#autotoc_md4", null ],
+    [ "Architecture", "index.html#autotoc_md6", [
+      [ "GUI-Based Execution Flow", "index.html#autotoc_md7", null ],
+      [ "CLI-Based Execution Flow", "index.html#autotoc_md8", null ],
+      [ "Core Modules", "index.html#autotoc_md9", null ]
     ] ],
-    [ "Testing", "index.html#autotoc_md19", null ],
-    [ "Documentation", "index.html#autotoc_md21", null ],
-    [ "Technologies", "index.html#autotoc_md23", null ],
-    [ "Security Notice", "index.html#autotoc_md25", null ],
-    [ "License", "index.html#autotoc_md27", null ],
+    [ "Team and Responsibilities", "index.html#autotoc_md11", null ],
+    [ "Installation &amp; Setup", "index.html#autotoc_md13", [
+      [ "1. Install Dependencies", "index.html#autotoc_md14", null ],
+      [ "2. Configure Clients", "index.html#autotoc_md16", null ],
+      [ "3. Launch the Application", "index.html#autotoc_md18", null ]
+    ] ],
+    [ "Platform-Specific Instructions", "index.html#autotoc_md20", [
+      [ "Windows", "index.html#autotoc_md21", null ],
+      [ "macOS", "index.html#autotoc_md22", null ],
+      [ "Linux (Ubuntu/Debian)", "index.html#autotoc_md23", null ]
+    ] ],
+    [ "GUI Controls", "index.html#autotoc_md25", null ],
+    [ "Testing", "index.html#autotoc_md27", null ],
+    [ "Documentation", "index.html#autotoc_md29", null ],
+    [ "Technologies", "index.html#autotoc_md31", null ],
+    [ "Security Notice", "index.html#autotoc_md33", null ],
+    [ "License", "index.html#autotoc_md35", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [

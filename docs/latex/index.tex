@@ -4,21 +4,29 @@
 \Hypertarget{index_md__r_e_a_d_m_e}%
 
 
-A decentralized, peer-\/to-\/peer chat application developed in Python for the {\bfseries{Betriebssysteme und Rechnernetze}} (Operating Systems and Computer Networks) course. ~\newline
- This project implements a custom protocol called SLCP (Simple Local Chat Protocol) to demonstrate real-\/time communication over local networks without relying on central servers.\hypertarget{index_autotoc_md1}{}\doxysection{\texorpdfstring{Project Overview}{Project Overview}}\label{index_autotoc_md1}
-The application enables direct communication between clients in the same network, supporting both text messaging and image transfer. Peers are discovered dynamically via UDP broadcasting. The system combines lightweight protocols (UDP for control/data, TCP for binary files) and provides both a graphical and terminal-\/based user interface.
-
-Typical use cases\+:
+A decentralized, peer-\/to-\/peer chat application developed in Python for the {\bfseries{Betriebssysteme und Rechnernetze}} (Operating Systems and Computer Networks) course. This project implements a custom protocol called SLCP (Simple Local Chat Protocol) to demonstrate real-\/time communication over local networks without relying on central servers.\hypertarget{index_autotoc_md1}{}\doxysection{\texorpdfstring{Project Description}{Project Description}}\label{index_autotoc_md1}
+The project aims to simulate a real-\/world decentralized chat application that supports direct peer-\/to-\/peer communication without relying on a central server. By using both UDP and TCP sockets, the system enables\+:
 \begin{DoxyItemize}
-\item Real-\/time 1\+:1 peer messaging
-\item Reliable image file transfer
-\item Away-\/from-\/keyboard (AFK) status with autoreplies
-\item Auto-\/discovery of connected clients in the network
-\item GUI and CLI interface options
+\item Dynamic discovery of other peers
+\item Text-\/based chat communication
+\item Image file sharing
+\item Away-\/from-\/keyboard (AFK) autoreply functionality
+\item Two fully-\/featured interfaces\+: a command-\/line interface (CLI) and a graphical user interface (GUI)
+\end{DoxyItemize}
+
+This system mirrors the principles of modern decentralized applications where reliability, independence, and peer autonomy are key. The communication protocol (SLCP) was developed specifically for this project, ensuring messages are structured, lightweight, and interpretable.\hypertarget{index_autotoc_md2}{}\doxysubsection{\texorpdfstring{Challenges Faced}{Challenges Faced}}\label{index_autotoc_md2}
+Developing a decentralized peer-\/to-\/peer application came with several challenges\+:
+\begin{DoxyItemize}
+\item {\bfseries{Concurrency Management\+:}} Synchronizing multiple processes (network, discovery, GUI, CLI) required careful use of multiprocessing, threading, and pipes.
+\item {\bfseries{Peer Discovery\+:}} Broadcasting JOIN and WHO messages while avoiding duplicate peers or stale data demanded a reliable protocol logic.
+\item {\bfseries{Image Transfer\+:}} Transferring large binary files over TCP while signaling over UDP required a clean and fail-\/safe handshaking mechanism.
+\item {\bfseries{Interface Parity\+:}} Maintaining full feature parity between CLI and GUI was non-\/trivial, especially with user interactions.
+\item {\bfseries{AFK Logic\+:}} Automatically replying with a custom message while avoiding spam loops required careful state tracking.
+\item {\bfseries{Cross-\/platform Compatibility\+:}} Ensuring the system runs reliably on Windows, mac\+OS, and Linux involved path handling, port availability checks, and encoding robustness.
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md3}{}\doxysection{\texorpdfstring{Features}{Features}}\label{index_autotoc_md3}
+\hypertarget{index_autotoc_md4}{}\doxysection{\texorpdfstring{Features}{Features}}\label{index_autotoc_md4}
 
 \begin{DoxyItemize}
 \item {\bfseries{Peer Discovery\+:}} Broadcast-\/based peer discovery using {\ttfamily JOIN}, {\ttfamily WHO}, and {\ttfamily KNOWUSERS} messages.
@@ -32,20 +40,10 @@ Typical use cases\+:
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md5}{}\doxysection{\texorpdfstring{Architecture}{Architecture}}\label{index_autotoc_md5}
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{┌──────────────┐\ \ \ \ \ \ \ ┌────────────────┐\ \ \ \ \ \ \ ┌────────────┐}
-\DoxyCodeLine{│\ \ discovery\ \ \ │──────▶│\ \ peer\ registry\ │◀──────│\ \ network\ \ \ │}
-\DoxyCodeLine{└──────────────┘\ \ \ \ \ \ \ └────────────────┘\ \ \ \ \ \ \ └────────────┘}
-\DoxyCodeLine{\ \ \ \ \ \ \ │\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ▲\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ▲}
-\DoxyCodeLine{\ \ \ \ \ \ \ ▼\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ │\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ │}
-\DoxyCodeLine{\ ┌────────────┐\ \ \ \ \ \ \ \ \ \ \ ┌────────────┐\ \ \ \ \ \ \ \ \ \ ┌────────────┐}
-\DoxyCodeLine{\ │\ UDP\ socket\ │\ \ \ \ \ \ \ \ \ \ \ │\ config.toml│\ \ \ \ \ \ \ \ \ \ │\ \ \ GUI\ /\ CLI│}
-\DoxyCodeLine{\ └────────────┘\ \ \ \ \ \ \ \ \ \ \ └────────────┘\ \ \ \ \ \ \ \ \ \ └────────────┘}
-
-\end{DoxyCode}
-\hypertarget{index_autotoc_md6}{}\doxysubsection{\texorpdfstring{Core Modules}{Core Modules}}\label{index_autotoc_md6}
+\hypertarget{index_autotoc_md6}{}\doxysection{\texorpdfstring{Architecture}{Architecture}}\label{index_autotoc_md6}
+\hypertarget{index_autotoc_md7}{}\doxysubsection{\texorpdfstring{GUI-\/\+Based Execution Flow}{GUI-\/\+Based Execution Flow}}\label{index_autotoc_md7}
+\hypertarget{index_autotoc_md8}{}\doxysubsection{\texorpdfstring{CLI-\/\+Based Execution Flow}{CLI-\/\+Based Execution Flow}}\label{index_autotoc_md8}
+\hypertarget{index_autotoc_md9}{}\doxysubsection{\texorpdfstring{Core Modules}{Core Modules}}\label{index_autotoc_md9}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
 \hline
@@ -61,33 +59,33 @@ Typical use cases\+:
 {\ttfamily \doxylink{discovery_8py}{discovery.\+py}}  &Broadcast-\/based peer discovery logic  \\\cline{1-2}
 {\ttfamily \doxylink{network_8py}{network.\+py}}  &Handles UDP messaging, AFK logic, TCP images  \\\cline{1-2}
 {\ttfamily \doxylink{gui_8py}{gui.\+py}}  &Py\+Qt5-\/based user interface logic  \\\cline{1-2}
-{\ttfamily config.\+toml}  &TOML configuration for clients and settings  \\\cline{1-2}
+{\ttfamily \doxylink{config_8toml}{config.\+toml}}  &TOML configuration for clients and settings  \\\cline{1-2}
 \end{longtabu}
 
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md8}{}\doxysection{\texorpdfstring{Team and Responsibilities}{Team and Responsibilities}}\label{index_autotoc_md8}
+\hypertarget{index_autotoc_md11}{}\doxysection{\texorpdfstring{Team and Responsibilities}{Team and Responsibilities}}\label{index_autotoc_md11}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Matrikelnummer  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Role \& Contributions  }\\\cline{1-3}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Matrikelnummer  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Responsibilities  }\\\cline{1-3}
 \endfirsthead
 \hline
 \endfoot
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Matrikelnummer  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Role \& Contributions  }\\\cline{1-3}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Matrikelnummer  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Responsibilities  }\\\cline{1-3}
 \endhead
-Joseph Bolaños Beyloune  &1534591  &GUI, documentation, overall integration  \\\cline{1-3}
-Jalal Eddin Alhaj Ahmad  &1428348  &UDP and TCP communication logic  \\\cline{1-3}
-Ömer Faruk Capraz  &1522507  &Peer discovery (JOIN/\+WHO/\+KNOWUSERS)  \\\cline{1-3}
-Bratli Metuka  &1505429  &Testing, protocol implementation review  \\\cline{1-3}
-Aashir Ahtisham  &1447390  &TCP-\/based image transfer logic  \\\cline{1-3}
+{\bfseries{Aashir Ahtisham}}  &1447390  &Main contributor to {\ttfamily \doxylink{discovery_8py}{discovery.\+py}}, contributed to {\ttfamily \doxylink{network_8py}{network.\+py}}  \\\cline{1-3}
+{\bfseries{Bratli Metuka}}  &1505429  &Main contributor to {\ttfamily \doxylink{network_8py}{network.\+py}}, helped with {\ttfamily \doxylink{gui_8py}{gui.\+py}}  \\\cline{1-3}
+{\bfseries{Jalal Eddin Alhaj Ahmad}}  &1428348  &Main contributor to {\ttfamily \doxylink{cli_8py}{cli.\+py}} and {\ttfamily \doxylink{gui_8py}{gui.\+py}}, also worked on {\ttfamily \doxylink{discovery_8py}{discovery.\+py}}  \\\cline{1-3}
+{\bfseries{Joseph Bolaños Beyloune}}  &1534591  &Main contributor to documentation, contributed to {\ttfamily \doxylink{cli_8py}{cli.\+py}}, {\ttfamily \doxylink{gui_8py}{gui.\+py}}, {\ttfamily \doxylink{network_8py}{network.\+py}}  \\\cline{1-3}
+{\bfseries{Ömer Faruk Capraz}}  &1522507  &Main contributor to documentation, helped with {\ttfamily \doxylink{discovery_8py}{discovery.\+py}} and {\ttfamily \doxylink{cli_8py}{cli.\+py}}  \\\cline{1-3}
 \end{longtabu}
 
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md10}{}\doxysection{\texorpdfstring{Installation \& Setup}{Installation \& Setup}}\label{index_autotoc_md10}
-\hypertarget{index_autotoc_md11}{}\doxysubsection{\texorpdfstring{1. Install Dependencies}{1. Install Dependencies}}\label{index_autotoc_md11}
+\hypertarget{index_autotoc_md13}{}\doxysection{\texorpdfstring{Installation \& Setup}{Installation \& Setup}}\label{index_autotoc_md13}
+\hypertarget{index_autotoc_md14}{}\doxysubsection{\texorpdfstring{1. Install Dependencies}{1. Install Dependencies}}\label{index_autotoc_md14}
 Ensure Python 3.\+10+ is installed. Then install\+:
 
 
@@ -107,8 +105,8 @@ Or using {\ttfamily requirements.\+txt} if provided\+:
 
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md13}{}\doxysubsection{\texorpdfstring{2. Configure Clients}{2. Configure Clients}}\label{index_autotoc_md13}
-Update the {\ttfamily config.\+toml} file to define your client settings\+:
+\hypertarget{index_autotoc_md16}{}\doxysubsection{\texorpdfstring{2. Configure Clients}{2. Configure Clients}}\label{index_autotoc_md16}
+Update the {\ttfamily \doxylink{config_8toml}{config.\+toml}} file to define your client settings\+:
 
 
 \begin{DoxyCode}{0}
@@ -125,8 +123,10 @@ Update the {\ttfamily config.\+toml} file to define your client settings\+:
 
 Each client must have a unique {\ttfamily handle}, and ports must not conflict.
 
+The clients can also be updated after the application was launched.
+
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md15}{}\doxysubsection{\texorpdfstring{3. Launch the Application}{3. Launch the Application}}\label{index_autotoc_md15}
+\hypertarget{index_autotoc_md18}{}\doxysubsection{\texorpdfstring{3. Launch the Application}{3. Launch the Application}}\label{index_autotoc_md18}
 To run with the GUI\+:
 
 
@@ -145,10 +145,64 @@ To run via CLI\+:
 \end{DoxyCode}
 
 
-Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily config.\+toml}.
+Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily \doxylink{config_8toml}{config.\+toml}}.
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md17}{}\doxysubsection{\texorpdfstring{4. GUI Controls}{4. GUI Controls}}\label{index_autotoc_md17}
+\hypertarget{index_autotoc_md20}{}\doxysection{\texorpdfstring{Platform-\/\+Specific Instructions}{Platform-\/\+Specific Instructions}}\label{index_autotoc_md20}
+\hypertarget{index_autotoc_md21}{}\doxysubsection{\texorpdfstring{Windows}{Windows}}\label{index_autotoc_md21}
+
+\begin{DoxyItemize}
+\item Use a terminal like {\bfseries{Power\+Shell}} or {\bfseries{CMD}}.
+\item Ensure Python is added to PATH.
+\item Use {\ttfamily python} instead of {\ttfamily python3} if needed.
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python\ main.py\ Aashir}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md22}{}\doxysubsection{\texorpdfstring{mac\+OS}{mac\+OS}}\label{index_autotoc_md22}
+
+\begin{DoxyItemize}
+\item Open {\bfseries{Terminal}}.
+\item Use the default Python 3 installation (or via Homebrew).
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python3\ main.py\ Aashir}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md23}{}\doxysubsection{\texorpdfstring{Linux (Ubuntu/\+Debian)}{Linux (Ubuntu/\+Debian)}}\label{index_autotoc_md23}
+
+\begin{DoxyItemize}
+\item Use {\bfseries{Terminal}}.
+\item Ensure Python and pip are installed\+:
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sudo\ apt\ update}
+\DoxyCodeLine{sudo\ apt\ install\ python3\ python3-\/pip}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item Run the application\+:
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python3\ main.py\ Aashir}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{index_autotoc_md25}{}\doxysection{\texorpdfstring{GUI Controls}{GUI Controls}}\label{index_autotoc_md25}
 
 \begin{DoxyItemize}
 \item {\bfseries{Send Message}}\+: Press Enter or click "{}\+Send"{}
@@ -160,7 +214,7 @@ Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily conf
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md19}{}\doxysection{\texorpdfstring{Testing}{Testing}}\label{index_autotoc_md19}
+\hypertarget{index_autotoc_md27}{}\doxysection{\texorpdfstring{Testing}{Testing}}\label{index_autotoc_md27}
 You can simulate multiple clients by\+:
 \begin{DoxyItemize}
 \item Opening multiple terminal sessions with different handles
@@ -169,7 +223,7 @@ You can simulate multiple clients by\+:
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md21}{}\doxysection{\texorpdfstring{Documentation}{Documentation}}\label{index_autotoc_md21}
+\hypertarget{index_autotoc_md29}{}\doxysection{\texorpdfstring{Documentation}{Documentation}}\label{index_autotoc_md29}
 Doxygen documentation is located at\+:
 
 
@@ -196,7 +250,7 @@ The documentation includes\+:
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md23}{}\doxysection{\texorpdfstring{Technologies}{Technologies}}\label{index_autotoc_md23}
+\hypertarget{index_autotoc_md31}{}\doxysection{\texorpdfstring{Technologies}{Technologies}}\label{index_autotoc_md31}
 
 \begin{DoxyItemize}
 \item {\bfseries{Python 3.\+10+}}
@@ -207,11 +261,11 @@ The documentation includes\+:
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md25}{}\doxysection{\texorpdfstring{Security Notice}{Security Notice}}\label{index_autotoc_md25}
+\hypertarget{index_autotoc_md33}{}\doxysection{\texorpdfstring{Security Notice}{Security Notice}}\label{index_autotoc_md33}
 This application is designed for academic purposes only. ~\newline
  It does {\bfseries{not}} implement encryption, authentication, or secure transport mechanisms. ~\newline
  Use only on trusted local networks.
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md27}{}\doxysection{\texorpdfstring{License}{License}}\label{index_autotoc_md27}
+\hypertarget{index_autotoc_md35}{}\doxysection{\texorpdfstring{License}{License}}\label{index_autotoc_md35}
 MIT License – For educational use only. 

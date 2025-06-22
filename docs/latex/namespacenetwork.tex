@@ -16,12 +16,9 @@ int \mbox{\hyperlink{namespacenetwork_a761bf8a9cd29d8e3f0f59e7733bcd083}{MAX\+\_
 
 \doxysubsection{Detailed Description}
 \begin{DoxyVerb}@file network.py
-@brief Handles peer-to-peer communication over UDP and TCP for the chat system.
-@details This module is responsible for:
- - Receiving and sending chat messages via UDP
- - Transferring image files via TCP
- - Handling AFK (away) logic and auto-replies
- - Managing JOIN, WHO, and LEAVE events
+@brief Handles SLCP networking logic including peer discovery, messaging, AFK handling, and image transfer over TCP/UDP.
+
+This module implements the core networking layer of the SLCP protocol. It allows clients to send and receive messages and images, manage AFK states, and maintain a list of peers discovered in the network. Communication is done using UDP for messages and TCP for binary image transfer.
 \end{DoxyVerb}
  
 
@@ -34,167 +31,178 @@ int \mbox{\hyperlink{namespacenetwork_a761bf8a9cd29d8e3f0f59e7733bcd083}{MAX\+\_
 {\footnotesize\ttfamily \label{namespacenetwork_a4e70165338540f9bcd66201130a4adcb} 
 network.\+network\+\_\+process (\begin{DoxyParamCaption}\item[{}]{config}{, }\item[{}]{ui2net}{, }\item[{}]{net2ui}{}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}@brief Main process that manages all network communication.
-@param config Client configuration dictionary
-@param ui2net Pipe for commands coming from the UI
-@param net2ui Pipe for sending updates to the UI
-\end{DoxyVerb}
- 
+
 
 Definition at line \mbox{\hyperlink{network_8py_source_l00051}{51}} of file \mbox{\hyperlink{network_8py_source}{network.\+py}}.
 
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00051\ \textcolor{keyword}{def\ }network\_process(config,\ ui2net,\ net2ui):}
-\DoxyCodeLine{00052\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
-\DoxyCodeLine{00053\ \textcolor{stringliteral}{\ \ \ \ @brief\ Main\ process\ that\ manages\ all\ network\ communication.}}
-\DoxyCodeLine{00054\ \textcolor{stringliteral}{\ \ \ \ @param\ config\ Client\ configuration\ dictionary}}
-\DoxyCodeLine{00055\ \textcolor{stringliteral}{\ \ \ \ @param\ ui2net\ Pipe\ for\ commands\ coming\ from\ the\ UI}}
-\DoxyCodeLine{00056\ \textcolor{stringliteral}{\ \ \ \ @param\ net2ui\ Pipe\ for\ sending\ updates\ to\ the\ UI}}
-\DoxyCodeLine{00057\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
-\DoxyCodeLine{00058\ \ \ \ \ handle\ =\ config[\textcolor{stringliteral}{"{}handle"{}}]}
-\DoxyCodeLine{00059\ \ \ \ \ port\ =\ config[\textcolor{stringliteral}{"{}port"{}}][0]}
-\DoxyCodeLine{00060\ \ \ \ \ whoisport\ =\ config[\textcolor{stringliteral}{"{}whoisport"{}}]}
-\DoxyCodeLine{00061\ \ \ \ \ peers\ =\ config[\textcolor{stringliteral}{"{}peers"{}}]}
-\DoxyCodeLine{00062\ \ \ \ \ autoreply\ =\ config[\textcolor{stringliteral}{"{}autoreply"{}}]}
-\DoxyCodeLine{00063\ \ \ \ \ away\ =\ config.get(\textcolor{stringliteral}{"{}away"{}},\ \textcolor{keyword}{False})}
-\DoxyCodeLine{00064\ \ \ \ \ img\_path\ =\ config[\textcolor{stringliteral}{"{}imagepath"{}}]}
-\DoxyCodeLine{00065\ \ \ \ \ os.makedirs(img\_path,\ exist\_ok=\textcolor{keyword}{True})}
-\DoxyCodeLine{00066\ }
-\DoxyCodeLine{00067\ \ \ \ \ afk\_replied\_to\ =\ set()}
-\DoxyCodeLine{00068\ }
-\DoxyCodeLine{00069\ \ \ \ \ \textcolor{comment}{\#\ Create\ UDP\ socket}}
-\DoxyCodeLine{00070\ \ \ \ \ udp\_sock\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)}
-\DoxyCodeLine{00071\ \ \ \ \ udp\_sock.setsockopt(socket.SOL\_SOCKET,\ socket.SO\_REUSEADDR,\ 1)}
-\DoxyCodeLine{00072\ \ \ \ \ udp\_sock.setsockopt(socket.SOL\_SOCKET,\ socket.SO\_BROADCAST,\ 1)}
-\DoxyCodeLine{00073\ \ \ \ \ udp\_sock.bind((\textcolor{stringliteral}{"{}"{}},\ port))}
-\DoxyCodeLine{00074\ \ \ \ \ udp\_sock.setblocking(\textcolor{keyword}{False})}
-\DoxyCodeLine{00075\ }
-\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{def\ }send\_periodic\_join():}
-\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keyword}{True}:}
-\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
-\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ msg\ =\ f\textcolor{stringliteral}{"{}JOIN\ \{handle\}\ \{port\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}})}
-\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(msg,\ (\textcolor{stringliteral}{"{}255.255.255.255"{}},\ whoisport))}
-\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ Exception\ \textcolor{keyword}{as}\ e:}
-\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[JOIN]\ Error:\ \{e\}"{}})}
-\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(5)}
-\DoxyCodeLine{00084\ }
-\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{def\ }send\_periodic\_who():}
-\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keyword}{True}:}
-\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
-\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(b\textcolor{stringliteral}{"{}WHO"{}},\ (\textcolor{stringliteral}{"{}255.255.255.255"{}},\ whoisport))}
-\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ Exception\ \textcolor{keyword}{as}\ e:}
-\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[WHO]\ Error:\ \{e\}"{}})}
-\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(5)}
+\DoxyCodeLine{00052\ \ \ \ \ handle\ \ \ \ \ =\ config[\textcolor{stringliteral}{"{}handle"{}}]}
+\DoxyCodeLine{00053\ \ \ \ \ port\ \ \ \ \ \ \ =\ config[\textcolor{stringliteral}{"{}port"{}}][0]}
+\DoxyCodeLine{00054\ \ \ \ \ whoisport\ \ =\ config[\textcolor{stringliteral}{"{}whoisport"{}}]}
+\DoxyCodeLine{00055\ \ \ \ \ peers\ \ \ \ \ \ =\ config[\textcolor{stringliteral}{"{}peers"{}}]}
+\DoxyCodeLine{00056\ \ \ \ \ autoreply\ \ =\ config[\textcolor{stringliteral}{"{}autoreply"{}}]}
+\DoxyCodeLine{00057\ \ \ \ \ away\ \ \ \ \ \ \ =\ config.get(\textcolor{stringliteral}{"{}away"{}},\ \textcolor{keyword}{False})}
+\DoxyCodeLine{00058\ \ \ \ \ img\_path\ \ \ =\ config[\textcolor{stringliteral}{"{}imagepath"{}}]}
+\DoxyCodeLine{00059\ \ \ \ \ os.makedirs(img\_path,\ exist\_ok=\textcolor{keyword}{True})\ \ \textcolor{comment}{\#\ Ensure\ image\ directory\ exists}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ afk\_replied\_to\ =\ set()\ \ \textcolor{comment}{\#\ Tracks\ who\ we've\ already\ sent\ AFK\ autoreplies\ to}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{comment}{\#\ Create\ and\ bind\ UDP\ socket}}
+\DoxyCodeLine{00064\ \ \ \ \ udp\_sock\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)}
+\DoxyCodeLine{00065\ \ \ \ \ udp\_sock.setsockopt(socket.SOL\_SOCKET,\ socket.SO\_REUSEADDR,\ 1)}
+\DoxyCodeLine{00066\ \ \ \ \ udp\_sock.setsockopt(socket.SOL\_SOCKET,\ socket.SO\_BROADCAST,\ 1)}
+\DoxyCodeLine{00067\ \ \ \ \ udp\_sock.bind((\textcolor{stringliteral}{"{}"{}},\ port))}
+\DoxyCodeLine{00068\ \ \ \ \ udp\_sock.setblocking(\textcolor{keyword}{False})}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{comment}{\#\ Periodically\ broadcast\ JOIN}}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{def\ }send\_periodic\_join():}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keyword}{True}:}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ msg\ =\ f\textcolor{stringliteral}{"{}JOIN\ \{handle\}\ \{port\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}})}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(msg,\ (\textcolor{stringliteral}{"{}255.255.255.255"{}},\ whoisport))}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ Exception\ \textcolor{keyword}{as}\ e:}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[JOIN]\ Error\ while\ sending:\ \{e\}"{}})}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(5)}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{comment}{\#\ Periodically\ broadcast\ WHO}}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{def\ }send\_periodic\_who():}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keyword}{True}:}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(b\textcolor{stringliteral}{"{}WHO"{}},\ (\textcolor{stringliteral}{"{}255.255.255.255"{}},\ whoisport))}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ Exception\ \textcolor{keyword}{as}\ e:}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[WHO]\ Error\ while\ sending:\ \{e\}"{}})}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(5)}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{comment}{\#\ Start\ periodic\ broadcast\ threads}}
+\DoxyCodeLine{00090\ \ \ \ \ threading.Thread(target=send\_periodic\_join,\ daemon=\textcolor{keyword}{True}).start()}
+\DoxyCodeLine{00091\ \ \ \ \ threading.Thread(target=send\_periodic\_who,\ daemon=\textcolor{keyword}{True}).start()}
 \DoxyCodeLine{00092\ }
-\DoxyCodeLine{00093\ \ \ \ \ threading.Thread(target=send\_periodic\_join,\ daemon=\textcolor{keyword}{True}).start()}
-\DoxyCodeLine{00094\ \ \ \ \ threading.Thread(target=send\_periodic\_who,\ daemon=\textcolor{keyword}{True}).start()}
-\DoxyCodeLine{00095\ }
-\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keyword}{True}:}
-\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ui2net.poll():}
-\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ cmd,\ dest,\ payload\ =\ ui2net.recv()}
-\DoxyCodeLine{00099\ }
-\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ cmd\ ==\ \textcolor{stringliteral}{"{}EXIT"{}}:}
-\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}[NETWORK]\ Exiting.\ Notifying\ peers."{}})}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{comment}{\#\ Main\ event\ loop}}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordflow}{while}\ \textcolor{keyword}{True}:}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ UI\ commands}}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ui2net.poll():}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ cmd,\ dest,\ payload\ =\ ui2net.recv()}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ cmd\ ==\ \textcolor{stringliteral}{"{}EXIT"{}}:}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(\textcolor{stringliteral}{"{}[NETWORK]\ EXIT\ received.\ Notifying\ peers\ and\ shutting\ down."{}})}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Send\ LEAVE\ to\ all\ known\ peers\ before\ shutdown}}
 \DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ h,\ ip,\ pt\ \textcolor{keywordflow}{in}\ peers:}
 \DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
 \DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(f\textcolor{stringliteral}{"{}LEAVE\ \{handle\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}}),\ (ip,\ pt))}
 \DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ Exception\ \textcolor{keyword}{as}\ e:}
-\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[LEAVE]\ Error\ for\ \{h\}:\ \{e\}"{}})}
-\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break}}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[LEAVE]\ Error\ notifying\ \{h\}:\ \{e\}"{}})}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break}\ \ \textcolor{comment}{\#\ Exit\ main\ loop\ and\ shut\ down\ process}}
 \DoxyCodeLine{00108\ }
-\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}MSG"{}}:}
-\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ header\ =\ f\textcolor{stringliteral}{"{}MSG\ \{handle\}\ \{dest\}\ \{payload\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}})}
-\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ h,\ ip,\ pt\ \textcolor{keywordflow}{in}\ peers:}
-\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ h\ ==\ dest:}
-\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(header,\ (ip,\ pt))}
-\DoxyCodeLine{00114\ }
-\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}IMG"{}}:}
-\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ h,\ ip,\ pt\ \textcolor{keywordflow}{in}\ peers:}
-\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ h\ ==\ dest:}
-\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ send\_image\_via\_tcp(config,\ dest,\ payload,\ ip,\ pt)}
-\DoxyCodeLine{00119\ }
-\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}LEAVE"{}}:}
-\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ h,\ ip,\ pt\ \textcolor{keywordflow}{in}\ peers:}
-\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(f\textcolor{stringliteral}{"{}LEAVE\ \{handle\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}}),\ (ip,\ pt))}
-\DoxyCodeLine{00123\ }
-\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}AFK"{}}:}
-\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\ =\ payload.strip().upper()}
-\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ away\ =\ (status\ ==\ \textcolor{stringliteral}{"{}ON"{}})}
-\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ config[\textcolor{stringliteral}{"{}away"{}}]\ =\ away}
-\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ away:}
-\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ afk\_replied\_to.clear()}
-\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[NETWORK]\ AFK\ set\ to\ \{away\}"{}})}
-\DoxyCodeLine{00131\ }
-\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
-\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ data,\ addr\ =\ udp\_sock.recvfrom(MAX\_UDP\_SIZE)}
-\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ BlockingIOError:}
-\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(0.01)}
-\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
-\DoxyCodeLine{00137\ }
-\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
-\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ text\ =\ data.decode(\textcolor{stringliteral}{"{}utf-\/8"{}}).strip()}
-\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ UnicodeDecodeError:}
-\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
-\DoxyCodeLine{00142\ }
-\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ text:}
-\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
-\DoxyCodeLine{00145\ }
-\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ parts\ =\ text.split()}
-\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ cmd\ =\ parts[0]}
-\DoxyCodeLine{00148\ }
-\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ cmd\ ==\ \textcolor{stringliteral}{"{}MSG"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ >=\ 4:}
-\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ src,\ dest\ =\ parts[1],\ parts[2]}
-\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ msg\ =\ \textcolor{stringliteral}{"{}\ "{}}.join(parts[3:])}
-\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ dest\ ==\ handle:}
-\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ net2ui.send((\textcolor{stringliteral}{"{}MSG"{}},\ src,\ msg))}
-\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ away\ \textcolor{keywordflow}{and}\ src\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ afk\_replied\_to:}
-\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ reply\ =\ f\textcolor{stringliteral}{"{}MSG\ \{handle\}\ \{src\}\ \{autoreply\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}})}
-\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(reply,\ addr)}
-\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ afk\_replied\_to.add(src)}
-\DoxyCodeLine{00158\ }
-\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}IMG"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ ==\ 5:}
-\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ src,\ dest,\ tcp\_port\_s,\ size\_s\ =\ parts[1],\ parts[2],\ parts[3],\ parts[4]}
-\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ dest\ !=\ handle:}
-\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
-\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ tcp\_port\ =\ int(tcp\_port\_s)}
-\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ size\ =\ int(size\_s)}
-\DoxyCodeLine{00165\ }
-\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ client\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_STREAM)}
-\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ client.connect((addr[0],\ tcp\_port))}
-\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ buf\ =\ b\textcolor{stringliteral}{"{}"{}}}
-\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ len(buf)\ <\ size:}
-\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ chunk\ =\ client.recv(4096)}
-\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ chunk:}
-\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break}}
-\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ buf\ +=\ chunk}
-\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ client.close()}
-\DoxyCodeLine{00175\ }
-\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ fn\ =\ os.path.join(img\_path,\ f\textcolor{stringliteral}{"{}\{src\}\_\{int(time.time())\}.png"{}})}
-\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{with}\ open(fn,\ \textcolor{stringliteral}{"{}wb"{}})\ \textcolor{keyword}{as}\ f:}
-\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f.write(buf)}
-\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ net2ui.send((\textcolor{stringliteral}{"{}IMG"{}},\ src,\ fn))}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ cmd\ ==\ \textcolor{stringliteral}{"{}MSG"{}}:}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Standard\ SLCP\ message}}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ header\ =\ f\textcolor{stringliteral}{"{}MSG\ \{handle\}\ \{dest\}\ \{payload\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}})}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ h,\ ip,\ pt\ \textcolor{keywordflow}{in}\ peers:}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ h\ ==\ dest:}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(header,\ (ip,\ pt))}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}IMG"{}}:}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ h,\ ip,\ pt\ \textcolor{keywordflow}{in}\ peers:}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ h\ ==\ dest:}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ send\_image\_via\_tcp(config,\ dest,\ payload,\ ip,\ pt)}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}LEAVE"{}}:}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ h,\ ip,\ pt\ \textcolor{keywordflow}{in}\ peers:}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(f\textcolor{stringliteral}{"{}LEAVE\ \{handle\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}}),\ (ip,\ pt))}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}AFK"{}}:}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ AFK\ status\ toggling}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\ =\ payload.strip().upper()}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ away\ =\ (status\ ==\ \textcolor{stringliteral}{"{}ON"{}})}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ config[\textcolor{stringliteral}{"{}away"{}}]\ =\ away}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ away:}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ afk\_replied\_to.clear()}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[NETWORK]\ AFK\ mode\ \{'enabled'\ if\ away\ else\ 'disabled'\}."{}})}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ incoming\ UDP\ packets}}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ data,\ addr\ =\ udp\_sock.recvfrom(MAX\_UDP\_SIZE)}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ BlockingIOError:}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ time.sleep(0.01)}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \ \ text\ =\ data.decode(\textcolor{stringliteral}{"{}utf-\/8"{}}).strip()}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ UnicodeDecodeError:}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ text:}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ parts\ =\ text.split()}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ cmd\ =\ parts[0]}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ incoming\ chat\ message}}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ cmd\ ==\ \textcolor{stringliteral}{"{}MSG"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ >=\ 4:}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ src,\ dest\ =\ parts[1],\ parts[2]}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ msg\ =\ \textcolor{stringliteral}{'\ '}.join(parts[3:])}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ dest\ ==\ handle:}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ net2ui.send((\textcolor{stringliteral}{"{}MSG"{}},\ src,\ msg))}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Auto-\/reply\ if\ in\ AFK\ mode}}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ away\ \textcolor{keywordflow}{and}\ src\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ afk\_replied\_to:}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ udp\_sock.sendto(}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f\textcolor{stringliteral}{"{}MSG\ \{handle\}\ \{src\}\ \{autoreply\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}}),}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ addr}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ )}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ afk\_replied\_to.add(src)}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ incoming\ image\ transfer\ initiation}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}IMG"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ ==\ 5:}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ src,\ dest,\ tcp\_port\_s,\ size\_s\ =\ parts[1],\ parts[2],\ parts[3],\ parts[4]}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ dest\ !=\ handle:}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ tcp\_port\ =\ int(tcp\_port\_s)}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ size\ \ \ \ \ =\ int(size\_s)}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Connect\ to\ sender's\ temporary\ TCP\ server\ and\ download\ image}}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ client\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_STREAM)}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ client.connect((addr[0],\ tcp\_port))}
 \DoxyCodeLine{00180\ }
-\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}LEAVE"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ ==\ 2:}
-\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ leaver\ =\ parts[1]}
-\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ net2ui.send((\textcolor{stringliteral}{"{}LEAVE"{}},\ leaver,\ \textcolor{stringliteral}{"{}"{}}))}
-\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ peers[:]\ =\ [p\ \textcolor{keywordflow}{for}\ p\ \textcolor{keywordflow}{in}\ peers\ \textcolor{keywordflow}{if}\ p[0]\ !=\ leaver]}
-\DoxyCodeLine{00185\ }
-\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}KNOWUSERS"{}}:}
-\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ rest\ =\ text[len(\textcolor{stringliteral}{"{}KNOWUSERS\ "{}}):]}
-\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ chunk\ \textcolor{keywordflow}{in}\ rest.split(\textcolor{stringliteral}{"{},"{}}):}
-\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ chunk.strip():}
-\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
-\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
-\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ h,\ ip,\ pt\ =\ chunk.strip().split()}
-\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ entry\ =\ (h,\ ip,\ int(pt))}
-\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ h\ !=\ handle\ \textcolor{keywordflow}{and}\ entry\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ peers:}
-\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ peers.append(entry)}
-\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[KNOWUSERS]\ Added:\ \{entry\}"{}})}
-\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ ValueError:}
-\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
-\DoxyCodeLine{00199\ }
-\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ time.sleep(0.01)}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ buf\ =\ b\textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ len(buf)\ <\ size:}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ chunk\ =\ client.recv(4096)}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ chunk:}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break}}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ buf\ +=\ chunk}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ client.close()}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Save\ image\ to\ file\ and\ notify\ UI}}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ fn\ =\ os.path.join(img\_path,\ f\textcolor{stringliteral}{"{}\{src\}\_\{int(time.time())\}.png"{}})}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{with}\ open(fn,\ \textcolor{stringliteral}{"{}wb"{}})\ \textcolor{keyword}{as}\ f:}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f.write(buf)}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ net2ui.send((\textcolor{stringliteral}{"{}IMG"{}},\ src,\ fn))}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ LEAVE\ notifications}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}LEAVE"{}}\ \textcolor{keywordflow}{and}\ len(parts)\ ==\ 2:}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ leaver\ =\ parts[1]}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ net2ui.send((\textcolor{stringliteral}{"{}LEAVE"{}},\ leaver,\ \textcolor{stringliteral}{"{}"{}}))}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ peers[:]\ =\ [p\ \textcolor{keywordflow}{for}\ p\ \textcolor{keywordflow}{in}\ peers\ \textcolor{keywordflow}{if}\ p[0]\ !=\ leaver]}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Handle\ KNOWUSERS\ message\ to\ update\ peer\ list}}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{elif}\ cmd\ ==\ \textcolor{stringliteral}{"{}KNOWUSERS"{}}:}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ rest\ =\ text[len(\textcolor{stringliteral}{"{}KNOWUSERS\ "{}}):]}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ chunk\ \textcolor{keywordflow}{in}\ rest.split(\textcolor{stringliteral}{','}):}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keywordflow}{not}\ chunk.strip():}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}:}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ h,\ ip,\ pt\ =\ chunk.strip().split()}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ entry\ =\ (h,\ ip,\ int(pt))}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ h\ !=\ handle\ \textcolor{keywordflow}{and}\ entry\ \textcolor{keywordflow}{not}\ \textcolor{keywordflow}{in}\ peers:}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ peers.append(entry)}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ print(f\textcolor{stringliteral}{"{}[KNOWUSERS]\ New\ peer:\ \{entry\}"{}})}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{except}\ ValueError:}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ time.sleep(0.01)}
 
 \end{DoxyCode}
 \Hypertarget{namespacenetwork_ad1450edd32b2488fa2e14e6e63d066f5}\index{network@{network}!send\_image\_via\_tcp@{send\_image\_via\_tcp}}
@@ -203,51 +211,44 @@ Definition at line \mbox{\hyperlink{network_8py_source_l00051}{51}} of file \mbo
 {\footnotesize\ttfamily \label{namespacenetwork_ad1450edd32b2488fa2e14e6e63d066f5} 
 network.\+send\+\_\+image\+\_\+via\+\_\+tcp (\begin{DoxyParamCaption}\item[{}]{config}{, }\item[{}]{dest\+\_\+handle}{, }\item[{}]{filepath}{, }\item[{}]{peer\+\_\+ip}{, }\item[{}]{peer\+\_\+port}{}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}@brief Sends an image file to a peer using TCP.
-@param config Dictionary containing local client config
-@param dest_handle Destination handle (username)
-@param filepath Path to the image to send
-@param peer_ip IP address of the peer
-@param peer_port UDP port of the peer
-\end{DoxyVerb}
- 
+
 
 Definition at line \mbox{\hyperlink{network_8py_source_l00019}{19}} of file \mbox{\hyperlink{network_8py_source}{network.\+py}}.
 
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00019\ \textcolor{keyword}{def\ }send\_image\_via\_tcp(config,\ dest\_handle,\ filepath,\ peer\_ip,\ peer\_port):}
-\DoxyCodeLine{00020\ \ \ \ \ \textcolor{stringliteral}{"{}"{}"{}}}
-\DoxyCodeLine{00021\ \textcolor{stringliteral}{\ \ \ \ @brief\ Sends\ an\ image\ file\ to\ a\ peer\ using\ TCP.}}
-\DoxyCodeLine{00022\ \textcolor{stringliteral}{\ \ \ \ @param\ config\ Dictionary\ containing\ local\ client\ config}}
-\DoxyCodeLine{00023\ \textcolor{stringliteral}{\ \ \ \ @param\ dest\_handle\ Destination\ handle\ (username)}}
-\DoxyCodeLine{00024\ \textcolor{stringliteral}{\ \ \ \ @param\ filepath\ Path\ to\ the\ image\ to\ send}}
-\DoxyCodeLine{00025\ \textcolor{stringliteral}{\ \ \ \ @param\ peer\_ip\ IP\ address\ of\ the\ peer}}
-\DoxyCodeLine{00026\ \textcolor{stringliteral}{\ \ \ \ @param\ peer\_port\ UDP\ port\ of\ the\ peer}}
-\DoxyCodeLine{00027\ \textcolor{stringliteral}{\ \ \ \ "{}"{}"{}}}
-\DoxyCodeLine{00028\ \ \ \ \ handle\ =\ config[\textcolor{stringliteral}{"{}handle"{}}]}
-\DoxyCodeLine{00029\ \ \ \ \ data\ =\ open(filepath,\ \textcolor{stringliteral}{"{}rb"{}}).read()}
-\DoxyCodeLine{00030\ \ \ \ \ size\ =\ len(data)}
-\DoxyCodeLine{00031\ }
-\DoxyCodeLine{00032\ \ \ \ \ server\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_STREAM)}
-\DoxyCodeLine{00033\ \ \ \ \ server.bind((\textcolor{stringliteral}{"{}"{}},\ 0))}
-\DoxyCodeLine{00034\ \ \ \ \ server.listen(1)}
-\DoxyCodeLine{00035\ \ \ \ \ tcp\_port\ =\ server.getsockname()[1]}
+\DoxyCodeLine{00020\ \ \ \ \ handle\ \ \ =\ config[\textcolor{stringliteral}{"{}handle"{}}]}
+\DoxyCodeLine{00021\ \ \ \ \ img\_path\ =\ config[\textcolor{stringliteral}{"{}imagepath"{}}]}
+\DoxyCodeLine{00022\ \ \ \ \ data\ =\ open(filepath,\ \textcolor{stringliteral}{"{}rb"{}}).read()\ \ \ \textcolor{comment}{\#\ Read\ image\ file\ as\ bytes}}
+\DoxyCodeLine{00023\ \ \ \ \ size\ =\ len(data)}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{comment}{\#\ Set\ up\ temporary\ TCP\ server\ to\ send\ image}}
+\DoxyCodeLine{00026\ \ \ \ \ server\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_STREAM)}
+\DoxyCodeLine{00027\ \ \ \ \ server.bind((\textcolor{stringliteral}{"{}"{}},\ 0))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{\#\ Bind\ to\ a\ random\ free\ port}}
+\DoxyCodeLine{00028\ \ \ \ \ server.listen(1)}
+\DoxyCodeLine{00029\ \ \ \ \ tcp\_port\ =\ server.getsockname()[1]\ \ \ \textcolor{comment}{\#\ Get\ the\ chosen\ port}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{comment}{\#\ Notify\ recipient\ via\ UDP}}
+\DoxyCodeLine{00032\ \ \ \ \ udp\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)}
+\DoxyCodeLine{00033\ \ \ \ \ udp.sendto(f\textcolor{stringliteral}{"{}IMG\ \{handle\}\ \{dest\_handle\}\ \{tcp\_port\}\ \{size\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}}),}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (peer\_ip,\ peer\_port))}
+\DoxyCodeLine{00035\ \ \ \ \ udp.close()}
 \DoxyCodeLine{00036\ }
-\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{\#\ Notify\ recipient\ of\ incoming\ image\ via\ UDP}}
-\DoxyCodeLine{00038\ \ \ \ \ udp\ =\ socket.socket(socket.AF\_INET,\ socket.SOCK\_DGRAM)}
-\DoxyCodeLine{00039\ \ \ \ \ udp.sendto(f\textcolor{stringliteral}{"{}IMG\ \{handle\}\ \{dest\_handle\}\ \{tcp\_port\}\ \{size\}"{}}.encode(\textcolor{stringliteral}{"{}utf-\/8"{}}),\ (peer\_ip,\ peer\_port))}
-\DoxyCodeLine{00040\ \ \ \ \ udp.close()}
-\DoxyCodeLine{00041\ }
-\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{def\ }\_serve():}
-\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ conn,\ \_\ =\ server.accept()}
-\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ conn.sendall(data)}
-\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ conn.close()}
-\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ server.close()}
-\DoxyCodeLine{00047\ }
-\DoxyCodeLine{00048\ \ \ \ \ threading.Thread(target=\_serve,\ daemon=\textcolor{keyword}{True}).start()}
-\DoxyCodeLine{00049\ }
-\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{\#\ Serve\ the\ image\ in\ a\ separate\ thread}}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{def\ }\_serve():}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ conn,\ \_\ =\ server.accept()}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ conn.sendall(data)\ \ \ \textcolor{comment}{\#\ Send\ image\ data}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ conn.close()}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ server.close()}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ threading.Thread(target=\_serve,\ daemon=\textcolor{keyword}{True}).start()}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{comment}{\#\ Main\ network\ process\ responsible\ for\ handling\ all\ networking\ logic}}
+\DoxyCodeLine{00047\ \textcolor{comment}{\#}}
+\DoxyCodeLine{00048\ \textcolor{comment}{\#\ @param\ config\ \ \ Client\ configuration\ dictionary.}}
+\DoxyCodeLine{00049\ \textcolor{comment}{\#\ @param\ ui2net\ \ \ Pipe\ for\ receiving\ commands\ from\ the\ UI\ (CLI\ or\ GUI).}}
+\DoxyCodeLine{00050\ \textcolor{comment}{\#\ @param\ net2ui\ \ \ Pipe\ for\ sending\ events\ back\ to\ the\ UI.}}
 
 \end{DoxyCode}
 
@@ -263,5 +264,5 @@ int network.\+MAX\+\_\+\+UDP\+\_\+\+SIZE = 65507}
 
 
 
-Definition at line \mbox{\hyperlink{network_8py_source_l00016}{16}} of file \mbox{\hyperlink{network_8py_source}{network.\+py}}.
+Definition at line \mbox{\hyperlink{network_8py_source_l00010}{10}} of file \mbox{\hyperlink{network_8py_source}{network.\+py}}.
 

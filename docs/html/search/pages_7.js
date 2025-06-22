@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['features_0',['Features',['../cli_8py.html#features_sec',1,'Features'],['../index.html#autotoc_md3',1,'Features']]]
+  ['execution_20flow_0',['Execution Flow',['../index.html#autotoc_md8',1,'CLI-Based Execution Flow'],['../index.html#autotoc_md7',1,'GUI-Based Execution Flow']]]
 ];

@@ -92,20 +92,29 @@ $(function(){initNavTree('index.html','',''); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a></p>
-<p>A decentralized, peer-to-peer chat application developed in Python for the <b>Betriebssysteme und Rechnernetze</b> (Operating Systems and Computer Networks) course. <br  />
- This project implements a custom protocol called SLCP (Simple Local Chat Protocol) to demonstrate real-time communication over local networks without relying on central servers.</p>
+<p>A decentralized, peer-to-peer chat application developed in Python for the <b>Betriebssysteme und Rechnernetze</b> (Operating Systems and Computer Networks) course. This project implements a custom protocol called SLCP (Simple Local Chat Protocol) to demonstrate real-time communication over local networks without relying on central servers.</p>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md1"></a>
-Project Overview</h1>
-<p>The application enables direct communication between clients in the same network, supporting both text messaging and image transfer. Peers are discovered dynamically via UDP broadcasting. The system combines lightweight protocols (UDP for control/data, TCP for binary files) and provides both a graphical and terminal-based user interface.</p>
-<p>Typical use cases:</p><ul>
-<li>Real-time 1:1 peer messaging</li>
-<li>Reliable image file transfer</li>
-<li>Away-from-keyboard (AFK) status with autoreplies</li>
-<li>Auto-discovery of connected clients in the network</li>
-<li>GUI and CLI interface options</li>
+Project Description</h1>
+<p>The project aims to simulate a real-world decentralized chat application that supports direct peer-to-peer communication without relying on a central server. By using both UDP and TCP sockets, the system enables:</p><ul>
+<li>Dynamic discovery of other peers</li>
+<li>Text-based chat communication</li>
+<li>Image file sharing</li>
+<li>Away-from-keyboard (AFK) autoreply functionality</li>
+<li>Two fully-featured interfaces: a command-line interface (CLI) and a graphical user interface (GUI)</li>
+</ul>
+<p>This system mirrors the principles of modern decentralized applications where reliability, independence, and peer autonomy are key. The communication protocol (SLCP) was developed specifically for this project, ensuring messages are structured, lightweight, and interpretable.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md2"></a>
+Challenges Faced</h2>
+<p>Developing a decentralized peer-to-peer application came with several challenges:</p><ul>
+<li><b>Concurrency Management:</b> Synchronizing multiple processes (network, discovery, GUI, CLI) required careful use of multiprocessing, threading, and pipes.</li>
+<li><b>Peer Discovery:</b> Broadcasting JOIN and WHO messages while avoiding duplicate peers or stale data demanded a reliable protocol logic.</li>
+<li><b>Image Transfer:</b> Transferring large binary files over TCP while signaling over UDP required a clean and fail-safe handshaking mechanism.</li>
+<li><b>Interface Parity:</b> Maintaining full feature parity between CLI and GUI was non-trivial, especially with user interactions.</li>
+<li><b>AFK Logic:</b> Automatically replying with a custom message while avoiding spam loops required careful state tracking.</li>
+<li><b>Cross-platform Compatibility:</b> Ensuring the system runs reliably on Windows, macOS, and Linux involved path handling, port availability checks, and encoding robustness.</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md3"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
 Features</h1>
 <ul>
 <li><b>Peer Discovery:</b> Broadcast-based peer discovery using <span class="tt">JOIN</span>, <span class="tt">WHO</span>, and <span class="tt">KNOWUSERS</span> messages.</li>
@@ -118,17 +127,15 @@ Features</h1>
 <li><b>Fully Documented:</b> Comprehensive technical documentation generated using Doxygen.</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
 Architecture</h1>
-<div class="fragment"><div class="line">┌──────────────┐       ┌────────────────┐       ┌────────────┐</div>
-<div class="line">│  discovery   │──────▶│  peer registry │◀──────│  network   │</div>
-<div class="line">└──────────────┘       └────────────────┘       └────────────┘</div>
-<div class="line">       │                         ▲                      ▲</div>
-<div class="line">       ▼                         │                      │</div>
-<div class="line"> ┌────────────┐           ┌────────────┐          ┌────────────┐</div>
-<div class="line"> │ UDP socket │           │ config.toml│          │   GUI / CLI│</div>
-<div class="line"> └────────────┘           └────────────┘          └────────────┘</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md7"></a>
+GUI-Based Execution Flow</h2>
+<p><img src="./docs/diagrams/Diagram_Gui.png" alt="GUI Sequence Diagram" class="inline"/></p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md8"></a>
+CLI-Based Execution Flow</h2>
+<p><img src="./docs/diagrams/Diagram_Cli.png" alt="CLI Sequence Diagram" class="inline"/></p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md9"></a>
 Core Modules</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -147,33 +154,33 @@ Core Modules</h2>
 <td class="markdownTableBodyNone"><span class="tt">config.toml</span>  </td><td class="markdownTableBodyNone">TOML configuration for clients and settings  </td></tr>
 </table>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md8"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md11"></a>
 Team and Responsibilities</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Name  </th><th class="markdownTableHeadNone">Matrikelnummer  </th><th class="markdownTableHeadNone">Role &amp; Contributions  </th></tr>
+<th class="markdownTableHeadNone">Name  </th><th class="markdownTableHeadNone">Matrikelnummer  </th><th class="markdownTableHeadNone">Responsibilities  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Joseph Bolaños Beyloune  </td><td class="markdownTableBodyNone">1534591  </td><td class="markdownTableBodyNone">GUI, documentation, overall integration  </td></tr>
+<td class="markdownTableBodyNone"><b>Aashir Ahtisham</b>  </td><td class="markdownTableBodyNone">1447390  </td><td class="markdownTableBodyNone">Main contributor to <span class="tt">discovery.py</span>, contributed to <span class="tt">network.py</span>  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Jalal Eddin Alhaj Ahmad  </td><td class="markdownTableBodyNone">1428348  </td><td class="markdownTableBodyNone">UDP and TCP communication logic  </td></tr>
+<td class="markdownTableBodyNone"><b>Bratli Metuka</b>  </td><td class="markdownTableBodyNone">1505429  </td><td class="markdownTableBodyNone">Main contributor to <span class="tt">network.py</span>, helped with <span class="tt">gui.py</span>  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Ömer Faruk Capraz  </td><td class="markdownTableBodyNone">1522507  </td><td class="markdownTableBodyNone">Peer discovery (JOIN/WHO/KNOWUSERS)  </td></tr>
+<td class="markdownTableBodyNone"><b>Jalal Eddin Alhaj Ahmad</b>  </td><td class="markdownTableBodyNone">1428348  </td><td class="markdownTableBodyNone">Main contributor to <span class="tt">cli.py</span> and <span class="tt">gui.py</span>, also worked on <span class="tt">discovery.py</span>  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Bratli Metuka  </td><td class="markdownTableBodyNone">1505429  </td><td class="markdownTableBodyNone">Testing, protocol implementation review  </td></tr>
+<td class="markdownTableBodyNone"><b>Joseph Bolaños Beyloune</b>  </td><td class="markdownTableBodyNone">1534591  </td><td class="markdownTableBodyNone">Main contributor to documentation, contributed to <span class="tt">cli.py</span>, <span class="tt">gui.py</span>, <span class="tt">network.py</span>  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Aashir Ahtisham  </td><td class="markdownTableBodyNone">1447390  </td><td class="markdownTableBodyNone">TCP-based image transfer logic  </td></tr>
+<td class="markdownTableBodyNone"><b>Ömer Faruk Capraz</b>  </td><td class="markdownTableBodyNone">1522507  </td><td class="markdownTableBodyNone">Main contributor to documentation, helped with <span class="tt">discovery.py</span> and <span class="tt">cli.py</span>  </td></tr>
 </table>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md10"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md13"></a>
 Installation &amp; Setup</h1>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md11"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md14"></a>
 1. Install Dependencies</h2>
 <p>Ensure Python 3.10+ is installed. Then install:</p>
 <div class="fragment"><div class="line">pip install PyQt5 toml qdarkstyle</div>
 </div><!-- fragment --><p>Or using <span class="tt">requirements.txt</span> if provided:</p>
 <div class="fragment"><div class="line">pip install -r requirements.txt</div>
 </div><!-- fragment --><hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md13"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md16"></a>
 2. Configure Clients</h2>
 <p>Update the <span class="tt">config.toml</span> file to define your client settings:</p>
 <div class="fragment"><div class="line">[[clients]]</div>
@@ -184,8 +191,9 @@ Installation &amp; Setup</h1>
 <div class="line">away = false</div>
 <div class="line">imagepath = &quot;./images/aashir&quot;</div>
 </div><!-- fragment --><p>Each client must have a unique <span class="tt">handle</span>, and ports must not conflict.</p>
+<p>The clients can also be updated after the application was launched.</p>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md15"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md18"></a>
 3. Launch the Application</h2>
 <p>To run with the GUI:</p>
 <div class="fragment"><div class="line">python3 main.py Aashir</div>
@@ -193,8 +201,38 @@ Installation &amp; Setup</h1>
 <div class="fragment"><div class="line">python3 cli.py Aashir</div>
 </div><!-- fragment --><p>Replace <span class="tt">"Aashir"</span> with any configured handle in <span class="tt">config.toml</span>.</p>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md17"></a>
-4. GUI Controls</h2>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md20"></a>
+Platform-Specific Instructions</h1>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md21"></a>
+Windows</h2>
+<ul>
+<li>Use a terminal like <b>PowerShell</b> or <b>CMD</b>.</li>
+<li>Ensure Python is added to PATH.</li>
+<li>Use <span class="tt">python</span> instead of <span class="tt">python3</span> if needed.</li>
+</ul>
+<div class="fragment"><div class="line">python main.py Aashir</div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
+macOS</h2>
+<ul>
+<li>Open <b>Terminal</b>.</li>
+<li>Use the default Python 3 installation (or via Homebrew).</li>
+</ul>
+<div class="fragment"><div class="line">python3 main.py Aashir</div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
+Linux (Ubuntu/Debian)</h2>
+<ul>
+<li>Use <b>Terminal</b>.</li>
+<li>Ensure Python and pip are installed:</li>
+</ul>
+<div class="fragment"><div class="line">sudo apt update</div>
+<div class="line">sudo apt install python3 python3-pip</div>
+</div><!-- fragment --><ul>
+<li>Run the application:</li>
+</ul>
+<div class="fragment"><div class="line">python3 main.py Aashir</div>
+</div><!-- fragment --><hr  />
+<h1 class="doxsection"><a class="anchor" id="autotoc_md25"></a>
+GUI Controls</h1>
 <ul>
 <li><b>Send Message</b>: Press Enter or click "Send"</li>
 <li><b>Send Image</b>: Select an image via "Send Image" button</li>
@@ -204,7 +242,7 @@ Installation &amp; Setup</h1>
 <li><b>Leave Chat</b>: Graceful exit</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md19"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md27"></a>
 Testing</h1>
 <p>You can simulate multiple clients by:</p><ul>
 <li>Opening multiple terminal sessions with different handles</li>
@@ -212,7 +250,7 @@ Testing</h1>
 <li>Observing image transfers and peer join/leave messages</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md21"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md29"></a>
 Documentation</h1>
 <p>Doxygen documentation is located at:</p>
 <div class="fragment"><div class="line">docs/html/index.html</div>
@@ -224,7 +262,7 @@ Documentation</h1>
 <li>Inline code documentation</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md31"></a>
 Technologies</h1>
 <ul>
 <li><b>Python 3.10+</b></li>
@@ -234,13 +272,13 @@ Technologies</h1>
 <li><b>Doxygen</b></li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md25"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md33"></a>
 Security Notice</h1>
 <p>This application is designed for academic purposes only. <br  />
  It does <b>not</b> implement encryption, authentication, or secure transport mechanisms. <br  />
  Use only on trusted local networks.</p>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md27"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md35"></a>
 License</h1>
 <p>MIT License – For educational use only. </p>
 </div></div><!-- PageDoc -->

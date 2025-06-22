@@ -1,18 +1,27 @@
 # ChatProgramm_Final
 
-A decentralized, peer-to-peer chat application developed in Python for the **Betriebssysteme und Rechnernetze** (Operating Systems and Computer Networks) course.  
-This project implements a custom protocol called SLCP (Simple Local Chat Protocol) to demonstrate real-time communication over local networks without relying on central servers.
+A decentralized, peer-to-peer chat application developed in Python for the **Betriebssysteme und Rechnernetze** (Operating Systems and Computer Networks) course. This project implements a custom protocol called SLCP (Simple Local Chat Protocol) to demonstrate real-time communication over local networks without relying on central servers.
 
-## Project Overview
+## Project Description
 
-The application enables direct communication between clients in the same network, supporting both text messaging and image transfer. Peers are discovered dynamically via UDP broadcasting. The system combines lightweight protocols (UDP for control/data, TCP for binary files) and provides both a graphical and terminal-based user interface.
+The project aims to simulate a real-world decentralized chat application that supports direct peer-to-peer communication without relying on a central server. By using both UDP and TCP sockets, the system enables:
+- Dynamic discovery of other peers
+- Text-based chat communication
+- Image file sharing
+- Away-from-keyboard (AFK) autoreply functionality
+- Two fully-featured interfaces: a command-line interface (CLI) and a graphical user interface (GUI)
 
-Typical use cases:
-- Real-time 1:1 peer messaging
-- Reliable image file transfer
-- Away-from-keyboard (AFK) status with autoreplies
-- Auto-discovery of connected clients in the network
-- GUI and CLI interface options
+This system mirrors the principles of modern decentralized applications where reliability, independence, and peer autonomy are key. The communication protocol (SLCP) was developed specifically for this project, ensuring messages are structured, lightweight, and interpretable.
+
+### Challenges Faced
+
+Developing a decentralized peer-to-peer application came with several challenges:
+- **Concurrency Management:** Synchronizing multiple processes (network, discovery, GUI, CLI) required careful use of multiprocessing, threading, and pipes.
+- **Peer Discovery:** Broadcasting JOIN and WHO messages while avoiding duplicate peers or stale data demanded a reliable protocol logic.
+- **Image Transfer:** Transferring large binary files over TCP while signaling over UDP required a clean and fail-safe handshaking mechanism.
+- **Interface Parity:** Maintaining full feature parity between CLI and GUI was non-trivial, especially with user interactions.
+- **AFK Logic:** Automatically replying with a custom message while avoiding spam loops required careful state tracking.
+- **Cross-platform Compatibility:** Ensuring the system runs reliably on Windows, macOS, and Linux involved path handling, port availability checks, and encoding robustness.
 
 ---
 
@@ -31,16 +40,13 @@ Typical use cases:
 
 ## Architecture
 
-```
-┌──────────────┐       ┌────────────────┐       ┌────────────┐
-│  discovery   │──────▶│  peer registry │◀──────│  network   │
-└──────────────┘       └────────────────┘       └────────────┘
-       │                         ▲                      ▲
-       ▼                         │                      │
- ┌────────────┐           ┌────────────┐          ┌────────────┐
- │ UDP socket │           │ config.toml│          │   GUI / CLI│
- └────────────┘           └────────────┘          └────────────┘
-```
+### GUI-Based Execution Flow
+
+![GUI Sequence Diagram](./docs/diagrams/Diagram_Gui.png) 
+
+### CLI-Based Execution Flow
+
+![CLI Sequence Diagram](./docs/diagrams/Diagram_Cli.png)
 
 ### Core Modules
 
@@ -59,7 +65,7 @@ Typical use cases:
 
 | Name                        | Matrikelnummer | Responsibilities                                                                   |
 |-----------------------------|----------------|------------------------------------------------------------------------------------|
-| **Aashir Ahtisham**         | 1447390        | Main developer for `discovery.py`, contributed to `network.py`                     |
+| **Aashir Ahtisham**         | 1447390        | Main contributor to `discovery.py`, contributed to `network.py`                     |
 | **Bratli Metuka**           | 1505429        | Main contributor to `network.py`, helped with `gui.py`                             |
 | **Jalal Eddin Alhaj Ahmad** | 1428348        | Main contributor to `cli.py` and `gui.py`, also worked on `discovery.py`           |
 | **Joseph Bolaños Beyloune** | 1534591        | Main contributor to documentation, contributed to `cli.py`, `gui.py`, `network.py` |
@@ -101,6 +107,8 @@ imagepath = "./images/aashir"
 
 Each client must have a unique `handle`, and ports must not conflict.
 
+The clients can also be updated after the application was launched. 
+
 ---
 
 ### 3. Launch the Application
@@ -121,7 +129,43 @@ Replace `"Aashir"` with any configured handle in `config.toml`.
 
 ---
 
-### 4. GUI Controls
+## Platform-Specific Instructions
+
+### Windows
+- Use a terminal like **PowerShell** or **CMD**.
+- Ensure Python is added to PATH.
+- Use `python` instead of `python3` if needed.
+
+```cmd
+python main.py Aashir
+```
+
+### macOS
+- Open **Terminal**.
+- Use the default Python 3 installation (or via Homebrew).
+
+```bash
+python3 main.py Aashir
+```
+
+### Linux (Ubuntu/Debian)
+- Use **Terminal**.
+- Ensure Python and pip are installed:
+
+```bash
+sudo apt update
+sudo apt install python3 python3-pip
+```
+
+- Run the application:
+
+```bash
+python3 main.py Aashir
+```
+
+---
+
+## GUI Controls
 
 - **Send Message**: Press Enter or click "Send"
 - **Send Image**: Select an image via "Send Image" button

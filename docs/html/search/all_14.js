@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['usage_0',['Usage',['../cli_8py.html#usage_sec',1,'']]]
+  ['team_20and_20responsibilities_0',['Team and Responsibilities',['../index.html#autotoc_md11',1,'']]],
+  ['technologies_1',['Technologies',['../index.html#autotoc_md31',1,'']]],
+  ['testing_2',['Testing',['../index.html#autotoc_md27',1,'']]],
+  ['the_20application_3',['3. Launch the Application',['../index.html#autotoc_md18',1,'']]],
+  ['ts_4',['ts',['../namespacecli.html#a83b773ef0d55a5629682c5a960c5367a',1,'cli.ts()'],['../namespacegui.html#af9f6976b4463db5432611939ae149165',1,'gui.ts()']]]
 ];
