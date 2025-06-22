@@ -284,11 +284,24 @@ Documentation</h1>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md33"></a>
 Technologies</h1>
 <ul>
-<li><b>Python 3.10+</b></li>
-<li><b>PyQt5</b></li>
-<li><b>TOML</b></li>
-<li><b>Socket Programming (UDP/TCP)</b></li>
-<li><b>Doxygen</b></li>
+<li><b>Python 3.10+</b> <br  />
+ The main programming language used for the entire application. Python's high-level syntax and standard library make it ideal for rapid development and academic projects.</li>
+<li><b>PyQt5</b> <br  />
+ Used to create the graphical user interface (GUI). Offers support for event-driven programming through signals and slots, as well as cross-platform compatibility.</li>
+<li><b>TOML</b> <br  />
+ A minimal and human-readable configuration file format used to define client settings such as handles, ports, autoreplies, and image directories.</li>
+<li><b>Socket Programming (UDP/TCP)</b> <br  />
+ Enables real-time communication between peers. UDP is used for message broadcasting (<span class="tt">JOIN</span>, <span class="tt">WHO</span>, <span class="tt">MSG</span>, etc.), while TCP is used for transferring binary image files.</li>
+<li><b>Doxygen</b> <br  />
+ Automatically generates HTML-based technical documentation from docstrings and markdown files such as <span class="tt">README.md</span>.</li>
+<li><b>Multiprocessing Pipes (<span class="tt">multiprocessing.Pipe</span>)</b> <br  />
+ Used for inter-process communication (IPC) between the GUI/CLI and the network process. Allows sending structured messages like <span class="tt">(MSG, handle, message)</span> through unidirectional or bidirectional channels.</li>
+<li><b>Threads (<span class="tt">threading.Thread</span>)</b> <br  />
+ Used for non-blocking background tasks like periodic broadcasting (<span class="tt">JOIN</span>, <span class="tt">WHO</span>) and image transfers. Ensures responsiveness of the GUI and CLI.</li>
+<li><b>Shared Memory (via <span class="tt">multiprocessing</span> state)</b> <br  />
+ Certain configuration states (e.g., AFK status) and message buffers are indirectly synchronized across processes by sharing references during process creation.</li>
+<li><b>QDarkStyle</b> <br  />
+ A ready-made dark mode theme applied to the PyQt5 interface for improved aesthetics and readability.</li>
 </ul>
 <hr  />
 <h1 class="doxsection"><a class="anchor" id="autotoc_md35"></a>

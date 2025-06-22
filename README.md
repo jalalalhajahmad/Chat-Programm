@@ -226,12 +226,33 @@ The documentation includes:
 
 ## Technologies
 
-- **Python 3.10+**
-- **PyQt5**
-- **TOML**
-- **Socket Programming (UDP/TCP)**
-- **Doxygen**
+- **Python 3.10+**  
+  The main programming language used for the entire application. Python's high-level syntax and standard library make it ideal for rapid development and academic projects.
 
+- **PyQt5**  
+  Used to create the graphical user interface (GUI). Offers support for event-driven programming through signals and slots, as well as cross-platform compatibility.
+
+- **TOML**  
+  A minimal and human-readable configuration file format used to define client settings such as handles, ports, autoreplies, and image directories.
+
+- **Socket Programming (UDP/TCP)**  
+  Enables real-time communication between peers. UDP is used for message broadcasting (`JOIN`, `WHO`, `MSG`, etc.), while TCP is used for transferring binary image files.
+
+- **Doxygen**  
+  Automatically generates HTML-based technical documentation from docstrings and markdown files such as `README.md`.
+
+- **Multiprocessing Pipes (`multiprocessing.Pipe`)**  
+  Used for inter-process communication (IPC) between the GUI/CLI and the network process. Allows sending structured messages like `(MSG, handle, message)` through unidirectional or bidirectional channels.
+
+- **Threads (`threading.Thread`)**  
+  Used for non-blocking background tasks like periodic broadcasting (`JOIN`, `WHO`) and image transfers. Ensures responsiveness of the GUI and CLI.
+
+- **Shared Memory (via `multiprocessing` state)**  
+  Certain configuration states (e.g., AFK status) and message buffers are indirectly synchronized across processes by sharing references during process creation.
+
+- **QDarkStyle**  
+  A ready-made dark mode theme applied to the PyQt5 interface for improved aesthetics and readability.
+  
 ---
 
 ## Security Notice

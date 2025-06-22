@@ -281,11 +281,24 @@ The documentation includes\+:
 \hypertarget{index_autotoc_md33}{}\doxysection{\texorpdfstring{Technologies}{Technologies}}\label{index_autotoc_md33}
 
 \begin{DoxyItemize}
-\item {\bfseries{Python 3.\+10+}}
-\item {\bfseries{Py\+Qt5}}
-\item {\bfseries{TOML}}
-\item {\bfseries{Socket Programming (UDP/\+TCP)}}
-\item {\bfseries{Doxygen}}
+\item {\bfseries{Python 3.\+10+}} ~\newline
+ The main programming language used for the entire application. Python\textquotesingle{}s high-\/level syntax and standard library make it ideal for rapid development and academic projects.
+\item {\bfseries{Py\+Qt5}} ~\newline
+ Used to create the graphical user interface (GUI). Offers support for event-\/driven programming through signals and slots, as well as cross-\/platform compatibility.
+\item {\bfseries{TOML}} ~\newline
+ A minimal and human-\/readable configuration file format used to define client settings such as handles, ports, autoreplies, and image directories.
+\item {\bfseries{Socket Programming (UDP/\+TCP)}} ~\newline
+ Enables real-\/time communication between peers. UDP is used for message broadcasting ({\ttfamily JOIN}, {\ttfamily WHO}, {\ttfamily MSG}, etc.), while TCP is used for transferring binary image files.
+\item {\bfseries{Doxygen}} ~\newline
+ Automatically generates HTML-\/based technical documentation from docstrings and markdown files such as {\ttfamily \doxylink{_r_e_a_d_m_e_8md}{README.\+md}}.
+\item {\bfseries{Multiprocessing Pipes ({\ttfamily multiprocessing.\+Pipe})}} ~\newline
+ Used for inter-\/process communication (IPC) between the GUI/\+CLI and the network process. Allows sending structured messages like {\ttfamily (MSG, handle, message)} through unidirectional or bidirectional channels.
+\item {\bfseries{Threads ({\ttfamily threading.\+Thread})}} ~\newline
+ Used for non-\/blocking background tasks like periodic broadcasting ({\ttfamily JOIN}, {\ttfamily WHO}) and image transfers. Ensures responsiveness of the GUI and CLI.
+\item {\bfseries{Shared Memory (via {\ttfamily multiprocessing} state)}} ~\newline
+ Certain configuration states (e.\+g., AFK status) and message buffers are indirectly synchronized across processes by sharing references during process creation.
+\item {\bfseries{QDark\+Style}} ~\newline
+ A ready-\/made dark mode theme applied to the Py\+Qt5 interface for improved aesthetics and readability.
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
