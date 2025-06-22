@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['macos_0',['macOS',['../index.html#autotoc_md22',1,'']]],
-  ['modules_1',['Core Modules',['../index.html#autotoc_md9',1,'']]]
+  ['launch_20the_20application_0',['4. Launch the Application',['../index.html#autotoc_md20',1,'']]],
+  ['license_1',['License',['../index.html#autotoc_md37',1,'']]],
+  ['linux_20ubuntu_20debian_2',['Linux (Ubuntu/Debian)',['../index.html#autotoc_md25',1,'']]]
 ];

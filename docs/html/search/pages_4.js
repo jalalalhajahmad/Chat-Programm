@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['based_20execution_20flow_0',['Based Execution Flow',['../index.html#autotoc_md8',1,'CLI-Based Execution Flow'],['../index.html#autotoc_md7',1,'GUI-Based Execution Flow']]]
+  ['and_20responsibilities_0',['Team and Responsibilities',['../index.html#autotoc_md11',1,'']]],
+  ['application_1',['4. Launch the Application',['../index.html#autotoc_md20',1,'']]],
+  ['architecture_2',['Architecture',['../index.html#autotoc_md6',1,'']]]
 ];

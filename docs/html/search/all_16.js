@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['windows_0',['Windows',['../index.html#autotoc_md21',1,'']]]
+  ['ubuntu_20debian_0',['Linux (Ubuntu/Debian)',['../index.html#autotoc_md25',1,'']]],
+  ['usage_1',['Usage',['../cli_8py.html#usage_sec',1,'']]]
 ];

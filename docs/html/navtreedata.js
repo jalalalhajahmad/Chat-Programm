@@ -36,21 +36,23 @@ var NAVTREE =
     ] ],
     [ "Team and Responsibilities", "index.html#autotoc_md11", null ],
     [ "Installation &amp; Setup", "index.html#autotoc_md13", [
-      [ "1. Install Dependencies", "index.html#autotoc_md14", null ],
-      [ "2. Configure Clients", "index.html#autotoc_md16", null ],
-      [ "3. Launch the Application", "index.html#autotoc_md18", null ]
+      [ "1. Install Python 3.10+", "index.html#autotoc_md14", null ],
+      [ "2. Install Dependencies", "index.html#autotoc_md15", null ],
+      [ "Required Packages", "index.html#autotoc_md16", null ],
+      [ "3. Configure Clients", "index.html#autotoc_md18", null ],
+      [ "4. Launch the Application", "index.html#autotoc_md20", null ]
     ] ],
-    [ "Platform-Specific Instructions", "index.html#autotoc_md20", [
-      [ "Windows", "index.html#autotoc_md21", null ],
-      [ "macOS", "index.html#autotoc_md22", null ],
-      [ "Linux (Ubuntu/Debian)", "index.html#autotoc_md23", null ]
+    [ "Platform-Specific Instructions", "index.html#autotoc_md22", [
+      [ "Windows", "index.html#autotoc_md23", null ],
+      [ "macOS", "index.html#autotoc_md24", null ],
+      [ "Linux (Ubuntu/Debian)", "index.html#autotoc_md25", null ]
     ] ],
-    [ "GUI Controls", "index.html#autotoc_md25", null ],
-    [ "Testing", "index.html#autotoc_md27", null ],
-    [ "Documentation", "index.html#autotoc_md29", null ],
-    [ "Technologies", "index.html#autotoc_md31", null ],
-    [ "Security Notice", "index.html#autotoc_md33", null ],
-    [ "License", "index.html#autotoc_md35", null ],
+    [ "GUI Controls", "index.html#autotoc_md27", null ],
+    [ "Testing", "index.html#autotoc_md29", null ],
+    [ "Documentation", "index.html#autotoc_md31", null ],
+    [ "Technologies", "index.html#autotoc_md33", null ],
+    [ "Security Notice", "index.html#autotoc_md35", null ],
+    [ "License", "index.html#autotoc_md37", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [

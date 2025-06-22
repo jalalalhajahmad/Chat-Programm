@@ -85,27 +85,43 @@ Developing a decentralized peer-\/to-\/peer application came with several challe
 
 \DoxyHorRuler{0}
 \hypertarget{index_autotoc_md13}{}\doxysection{\texorpdfstring{Installation \& Setup}{Installation \& Setup}}\label{index_autotoc_md13}
-\hypertarget{index_autotoc_md14}{}\doxysubsection{\texorpdfstring{1. Install Dependencies}{1. Install Dependencies}}\label{index_autotoc_md14}
-Ensure Python 3.\+10+ is installed. Then install\+:
+\hypertarget{index_autotoc_md14}{}\doxysubsection{\texorpdfstring{1. Install Python 3.\+10+}{1. Install Python 3.\+10+}}\label{index_autotoc_md14}
+Check your version\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python3\ -\/-\/version}
+
+\end{DoxyCode}
+
+
+If it\textquotesingle{}s lower than 3.\+10, update it via your platform\textquotesingle{}s instructions.\hypertarget{index_autotoc_md15}{}\doxysubsection{\texorpdfstring{2. Install Dependencies}{2. Install Dependencies}}\label{index_autotoc_md15}
+Use {\ttfamily pip} to install the required packages\+:
 
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{pip\ install\ PyQt5\ toml\ qdarkstyle}
 
 \end{DoxyCode}
-
-
-Or using {\ttfamily requirements.\+txt} if provided\+:
-
-
-\begin{DoxyCode}{0}
-\DoxyCodeLine{pip\ install\ -\/r\ requirements.txt}
-
-\end{DoxyCode}
+\hypertarget{index_autotoc_md16}{}\doxysubsection{\texorpdfstring{Required Packages}{Required Packages}}\label{index_autotoc_md16}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Package  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Purpose  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Package  }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Purpose  }\\\cline{1-2}
+\endhead
+{\bfseries{Py\+Qt5}}  &GUI framework (required for {\ttfamily \doxylink{main_8py}{main.\+py}})  \\\cline{1-2}
+{\bfseries{toml}}  &Configuration file parser  \\\cline{1-2}
+{\bfseries{qdarkstyle}}  &Optional dark mode for GUI theme  \\\cline{1-2}
+\end{longtabu}
 
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md16}{}\doxysubsection{\texorpdfstring{2. Configure Clients}{2. Configure Clients}}\label{index_autotoc_md16}
+\hypertarget{index_autotoc_md18}{}\doxysubsection{\texorpdfstring{3. Configure Clients}{3. Configure Clients}}\label{index_autotoc_md18}
 Update the {\ttfamily \doxylink{config_8toml}{config.\+toml}} file to define your client settings\+:
 
 
@@ -126,7 +142,7 @@ Each client must have a unique {\ttfamily handle}, and ports must not conflict.
 The clients can also be updated after the application was launched.
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md18}{}\doxysubsection{\texorpdfstring{3. Launch the Application}{3. Launch the Application}}\label{index_autotoc_md18}
+\hypertarget{index_autotoc_md20}{}\doxysubsection{\texorpdfstring{4. Launch the Application}{4. Launch the Application}}\label{index_autotoc_md20}
 To run with the GUI\+:
 
 
@@ -148,11 +164,11 @@ To run via CLI\+:
 Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily \doxylink{config_8toml}{config.\+toml}}.
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md20}{}\doxysection{\texorpdfstring{Platform-\/\+Specific Instructions}{Platform-\/\+Specific Instructions}}\label{index_autotoc_md20}
-\hypertarget{index_autotoc_md21}{}\doxysubsection{\texorpdfstring{Windows}{Windows}}\label{index_autotoc_md21}
+\hypertarget{index_autotoc_md22}{}\doxysection{\texorpdfstring{Platform-\/\+Specific Instructions}{Platform-\/\+Specific Instructions}}\label{index_autotoc_md22}
+\hypertarget{index_autotoc_md23}{}\doxysubsection{\texorpdfstring{Windows}{Windows}}\label{index_autotoc_md23}
 
 \begin{DoxyItemize}
-\item Use a terminal like {\bfseries{Power\+Shell}} or {\bfseries{CMD}}.
+\item Use {\bfseries{Power\+Shell}} or {\bfseries{CMD}}.
 \item Ensure Python is added to PATH.
 \item Use {\ttfamily python} instead of {\ttfamily python3} if needed.
 \end{DoxyItemize}
@@ -162,7 +178,7 @@ Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily \dox
 \DoxyCodeLine{python\ main.py\ Aashir}
 
 \end{DoxyCode}
-\hypertarget{index_autotoc_md22}{}\doxysubsection{\texorpdfstring{mac\+OS}{mac\+OS}}\label{index_autotoc_md22}
+\hypertarget{index_autotoc_md24}{}\doxysubsection{\texorpdfstring{mac\+OS}{mac\+OS}}\label{index_autotoc_md24}
 
 \begin{DoxyItemize}
 \item Open {\bfseries{Terminal}}.
@@ -174,17 +190,29 @@ Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily \dox
 \DoxyCodeLine{python3\ main.py\ Aashir}
 
 \end{DoxyCode}
-\hypertarget{index_autotoc_md23}{}\doxysubsection{\texorpdfstring{Linux (Ubuntu/\+Debian)}{Linux (Ubuntu/\+Debian)}}\label{index_autotoc_md23}
+\hypertarget{index_autotoc_md25}{}\doxysubsection{\texorpdfstring{Linux (Ubuntu/\+Debian)}{Linux (Ubuntu/\+Debian)}}\label{index_autotoc_md25}
 
 \begin{DoxyItemize}
-\item Use {\bfseries{Terminal}}.
-\item Ensure Python and pip are installed\+:
+\item Open {\bfseries{Terminal}}.
+\item Make sure Python 3 and pip are installed\+:
 \end{DoxyItemize}
 
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{sudo\ apt\ update}
 \DoxyCodeLine{sudo\ apt\ install\ python3\ python3-\/pip}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item Install dependencies\+:
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip3\ install\ PyQt5\ toml\ qdarkstyle}
 
 \end{DoxyCode}
 
@@ -202,7 +230,7 @@ Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily \dox
 
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md25}{}\doxysection{\texorpdfstring{GUI Controls}{GUI Controls}}\label{index_autotoc_md25}
+\hypertarget{index_autotoc_md27}{}\doxysection{\texorpdfstring{GUI Controls}{GUI Controls}}\label{index_autotoc_md27}
 
 \begin{DoxyItemize}
 \item {\bfseries{Send Message}}\+: Press Enter or click "{}\+Send"{}
@@ -214,7 +242,7 @@ Replace {\ttfamily "{}\+Aashir"{}} with any configured handle in {\ttfamily \dox
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md27}{}\doxysection{\texorpdfstring{Testing}{Testing}}\label{index_autotoc_md27}
+\hypertarget{index_autotoc_md29}{}\doxysection{\texorpdfstring{Testing}{Testing}}\label{index_autotoc_md29}
 You can simulate multiple clients by\+:
 \begin{DoxyItemize}
 \item Opening multiple terminal sessions with different handles
@@ -223,7 +251,7 @@ You can simulate multiple clients by\+:
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md29}{}\doxysection{\texorpdfstring{Documentation}{Documentation}}\label{index_autotoc_md29}
+\hypertarget{index_autotoc_md31}{}\doxysection{\texorpdfstring{Documentation}{Documentation}}\label{index_autotoc_md31}
 Doxygen documentation is located at\+:
 
 
@@ -250,7 +278,7 @@ The documentation includes\+:
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md31}{}\doxysection{\texorpdfstring{Technologies}{Technologies}}\label{index_autotoc_md31}
+\hypertarget{index_autotoc_md33}{}\doxysection{\texorpdfstring{Technologies}{Technologies}}\label{index_autotoc_md33}
 
 \begin{DoxyItemize}
 \item {\bfseries{Python 3.\+10+}}
@@ -261,11 +289,11 @@ The documentation includes\+:
 \end{DoxyItemize}
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md33}{}\doxysection{\texorpdfstring{Security Notice}{Security Notice}}\label{index_autotoc_md33}
+\hypertarget{index_autotoc_md35}{}\doxysection{\texorpdfstring{Security Notice}{Security Notice}}\label{index_autotoc_md35}
 This application is designed for academic purposes only. ~\newline
  It does {\bfseries{not}} implement encryption, authentication, or secure transport mechanisms. ~\newline
  Use only on trusted local networks.
 
 \DoxyHorRuler{0}
-\hypertarget{index_autotoc_md35}{}\doxysection{\texorpdfstring{License}{License}}\label{index_autotoc_md35}
+\hypertarget{index_autotoc_md37}{}\doxysection{\texorpdfstring{License}{License}}\label{index_autotoc_md37}
 MIT License – For educational use only. 

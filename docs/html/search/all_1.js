@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['2_20configure_20clients_0',['2. Configure Clients',['../index.html#autotoc_md16',1,'']]]
+  ['2_20install_20dependencies_0',['2. Install Dependencies',['../index.html#autotoc_md15',1,'']]]
 ];

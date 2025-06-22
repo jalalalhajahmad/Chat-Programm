@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['ubuntu_20debian_0',['Linux (Ubuntu/Debian)',['../index.html#autotoc_md23',1,'']]],
-  ['usage_1',['Usage',['../cli_8py.html#usage_sec',1,'']]]
+  ['team_20and_20responsibilities_0',['Team and Responsibilities',['../index.html#autotoc_md11',1,'']]],
+  ['technologies_1',['Technologies',['../index.html#autotoc_md33',1,'']]],
+  ['testing_2',['Testing',['../index.html#autotoc_md29',1,'']]],
+  ['the_20application_3',['4. Launch the Application',['../index.html#autotoc_md20',1,'']]]
 ];

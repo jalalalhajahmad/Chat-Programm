@@ -174,14 +174,29 @@ Team and Responsibilities</h1>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md13"></a>
 Installation &amp; Setup</h1>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md14"></a>
-1. Install Dependencies</h2>
-<p>Ensure Python 3.10+ is installed. Then install:</p>
+1. Install Python 3.10+</h2>
+<p>Check your version:</p>
+<div class="fragment"><div class="line">python3 --version</div>
+</div><!-- fragment --><p>If it's lower than 3.10, update it via your platform's instructions.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md15"></a>
+2. Install Dependencies</h2>
+<p>Use <span class="tt">pip</span> to install the required packages:</p>
 <div class="fragment"><div class="line">pip install PyQt5 toml qdarkstyle</div>
-</div><!-- fragment --><p>Or using <span class="tt">requirements.txt</span> if provided:</p>
-<div class="fragment"><div class="line">pip install -r requirements.txt</div>
-</div><!-- fragment --><hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md16"></a>
-2. Configure Clients</h2>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md16"></a>
+Required Packages</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Package  </th><th class="markdownTableHeadNone">Purpose  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>PyQt5</b>  </td><td class="markdownTableBodyNone">GUI framework (required for <span class="tt">main.py</span>)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>toml</b>  </td><td class="markdownTableBodyNone">Configuration file parser  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>qdarkstyle</b>  </td><td class="markdownTableBodyNone">Optional dark mode for GUI theme  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md18"></a>
+3. Configure Clients</h2>
 <p>Update the <span class="tt">config.toml</span> file to define your client settings:</p>
 <div class="fragment"><div class="line">[[clients]]</div>
 <div class="line">handle = &quot;Aashir&quot;</div>
@@ -193,45 +208,49 @@ Installation &amp; Setup</h1>
 </div><!-- fragment --><p>Each client must have a unique <span class="tt">handle</span>, and ports must not conflict.</p>
 <p>The clients can also be updated after the application was launched.</p>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md18"></a>
-3. Launch the Application</h2>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md20"></a>
+4. Launch the Application</h2>
 <p>To run with the GUI:</p>
 <div class="fragment"><div class="line">python3 main.py Aashir</div>
 </div><!-- fragment --><p>To run via CLI:</p>
 <div class="fragment"><div class="line">python3 cli.py Aashir</div>
 </div><!-- fragment --><p>Replace <span class="tt">"Aashir"</span> with any configured handle in <span class="tt">config.toml</span>.</p>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md20"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
 Platform-Specific Instructions</h1>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md21"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
 Windows</h2>
 <ul>
-<li>Use a terminal like <b>PowerShell</b> or <b>CMD</b>.</li>
+<li>Use <b>PowerShell</b> or <b>CMD</b>.</li>
 <li>Ensure Python is added to PATH.</li>
 <li>Use <span class="tt">python</span> instead of <span class="tt">python3</span> if needed.</li>
 </ul>
 <div class="fragment"><div class="line">python main.py Aashir</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
 macOS</h2>
 <ul>
 <li>Open <b>Terminal</b>.</li>
 <li>Use the default Python 3 installation (or via Homebrew).</li>
 </ul>
 <div class="fragment"><div class="line">python3 main.py Aashir</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md25"></a>
 Linux (Ubuntu/Debian)</h2>
 <ul>
-<li>Use <b>Terminal</b>.</li>
-<li>Ensure Python and pip are installed:</li>
+<li>Open <b>Terminal</b>.</li>
+<li>Make sure Python 3 and pip are installed:</li>
 </ul>
 <div class="fragment"><div class="line">sudo apt update</div>
 <div class="line">sudo apt install python3 python3-pip</div>
+</div><!-- fragment --><ul>
+<li>Install dependencies:</li>
+</ul>
+<div class="fragment"><div class="line">pip3 install PyQt5 toml qdarkstyle</div>
 </div><!-- fragment --><ul>
 <li>Run the application:</li>
 </ul>
 <div class="fragment"><div class="line">python3 main.py Aashir</div>
 </div><!-- fragment --><hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md25"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md27"></a>
 GUI Controls</h1>
 <ul>
 <li><b>Send Message</b>: Press Enter or click "Send"</li>
@@ -242,7 +261,7 @@ GUI Controls</h1>
 <li><b>Leave Chat</b>: Graceful exit</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md27"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md29"></a>
 Testing</h1>
 <p>You can simulate multiple clients by:</p><ul>
 <li>Opening multiple terminal sessions with different handles</li>
@@ -250,7 +269,7 @@ Testing</h1>
 <li>Observing image transfers and peer join/leave messages</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md29"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md31"></a>
 Documentation</h1>
 <p>Doxygen documentation is located at:</p>
 <div class="fragment"><div class="line">docs/html/index.html</div>
@@ -262,7 +281,7 @@ Documentation</h1>
 <li>Inline code documentation</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md31"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md33"></a>
 Technologies</h1>
 <ul>
 <li><b>Python 3.10+</b></li>
@@ -272,13 +291,13 @@ Technologies</h1>
 <li><b>Doxygen</b></li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md33"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md35"></a>
 Security Notice</h1>
 <p>This application is designed for academic purposes only. <br  />
  It does <b>not</b> implement encryption, authentication, or secure transport mechanisms. <br  />
  Use only on trusted local networks.</p>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md35"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md37"></a>
 License</h1>
 <p>MIT License – For educational use only. </p>
 </div></div><!-- PageDoc -->

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['notice_0',['Security Notice',['../index.html#autotoc_md33',1,'']]]
+  ['macos_0',['macOS',['../index.html#autotoc_md24',1,'']]],
+  ['modules_1',['Core Modules',['../index.html#autotoc_md9',1,'']]]
 ];

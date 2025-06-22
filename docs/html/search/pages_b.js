@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['launch_20the_20application_0',['3. Launch the Application',['../index.html#autotoc_md18',1,'']]],
-  ['license_1',['License',['../index.html#autotoc_md35',1,'']]],
-  ['linux_20ubuntu_20debian_2',['Linux (Ubuntu/Debian)',['../index.html#autotoc_md23',1,'']]]
+  ['install_20dependencies_0',['2. Install Dependencies',['../index.html#autotoc_md15',1,'']]],
+  ['install_20python_203_2010_1',['1. Install Python 3.10+',['../index.html#autotoc_md14',1,'']]],
+  ['installation_20setup_2',['Installation &amp;amp; Setup',['../index.html#autotoc_md13',1,'']]],
+  ['instructions_3',['Platform-Specific Instructions',['../index.html#autotoc_md22',1,'']]]
 ];

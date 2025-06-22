@@ -65,7 +65,7 @@ Developing a decentralized peer-to-peer application came with several challenges
 
 | Name                        | Matrikelnummer | Responsibilities                                                                   |
 |-----------------------------|----------------|------------------------------------------------------------------------------------|
-| **Aashir Ahtisham**         | 1447390        | Main contributor to `discovery.py`, contributed to `network.py`                     |
+| **Aashir Ahtisham**         | 1447390        | Main contributor to `discovery.py`, contributed to `network.py`                    |
 | **Bratli Metuka**           | 1505429        | Main contributor to `network.py`, helped with `gui.py`                             |
 | **Jalal Eddin Alhaj Ahmad** | 1428348        | Main contributor to `cli.py` and `gui.py`, also worked on `discovery.py`           |
 | **Joseph Bolaños Beyloune** | 1534591        | Main contributor to documentation, contributed to `cli.py`, `gui.py`, `network.py` |
@@ -75,23 +75,35 @@ Developing a decentralized peer-to-peer application came with several challenges
 
 ## Installation & Setup
 
-### 1. Install Dependencies
+### 1. Install Python 3.10+
 
-Ensure Python 3.10+ is installed. Then install:
+Check your version:
+
+```bash
+python3 --version
+```
+
+If it's lower than 3.10, update it via your platform's instructions.
+
+### 2. Install Dependencies
+
+Use `pip` to install the required packages:
 
 ```bash
 pip install PyQt5 toml qdarkstyle
 ```
 
-Or using `requirements.txt` if provided:
+### Required Packages
 
-```bash
-pip install -r requirements.txt
-```
+| Package        | Purpose                                       |
+|----------------|-----------------------------------------------|
+| **PyQt5**      | GUI framework (required for `main.py`)        |
+| **toml**       | Configuration file parser                     |
+| **qdarkstyle** | Optional dark mode for GUI theme              |
 
 ---
 
-### 2. Configure Clients
+### 3. Configure Clients
 
 Update the `config.toml` file to define your client settings:
 
@@ -111,7 +123,7 @@ The clients can also be updated after the application was launched.
 
 ---
 
-### 3. Launch the Application
+### 4. Launch the Application
 
 To run with the GUI:
 
@@ -132,7 +144,7 @@ Replace `"Aashir"` with any configured handle in `config.toml`.
 ## Platform-Specific Instructions
 
 ### Windows
-- Use a terminal like **PowerShell** or **CMD**.
+- Use **PowerShell** or **CMD**.
 - Ensure Python is added to PATH.
 - Use `python` instead of `python3` if needed.
 
@@ -149,12 +161,18 @@ python3 main.py Aashir
 ```
 
 ### Linux (Ubuntu/Debian)
-- Use **Terminal**.
-- Ensure Python and pip are installed:
+- Open **Terminal**.
+- Make sure Python 3 and pip are installed:
 
 ```bash
 sudo apt update
 sudo apt install python3 python3-pip
+```
+
+- Install dependencies:
+
+```bash
+pip3 install PyQt5 toml qdarkstyle
 ```
 
 - Run the application:

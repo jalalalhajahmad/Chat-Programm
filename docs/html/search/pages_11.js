@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['team_20and_20responsibilities_0',['Team and Responsibilities',['../index.html#autotoc_md11',1,'']]],
-  ['technologies_1',['Technologies',['../index.html#autotoc_md31',1,'']]],
-  ['testing_2',['Testing',['../index.html#autotoc_md27',1,'']]],
-  ['the_20application_3',['3. Launch the Application',['../index.html#autotoc_md18',1,'']]]
+  ['security_20notice_0',['Security Notice',['../index.html#autotoc_md35',1,'']]],
+  ['setup_1',['Installation &amp;amp; Setup',['../index.html#autotoc_md13',1,'']]],
+  ['specific_20instructions_2',['Platform-Specific Instructions',['../index.html#autotoc_md22',1,'']]]
 ];
