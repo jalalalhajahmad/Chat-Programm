@@ -330,12 +330,12 @@ Variables</h2></td></tr>
 <div class="line"><span class="lineno">  306</span>                <span class="keywordflow">if</span> src <span class="keywordflow">in</span> already_left:</div>
 <div class="line"><span class="lineno">  307</span>                    <span class="keywordflow">return</span></div>
 <div class="line"><span class="lineno">  308</span>                already_left.add(src)</div>
-<div class="line"><span class="lineno">  309</span>                append(f<span class="stringliteral">&quot;⚠️ {src} left the chat.&quot;</span>, <span class="stringliteral">&quot;#D60C0C&quot;</span>)</div>
+<div class="line"><span class="lineno">  309</span>                append(f<span class="stringliteral">&quot;WARNING {src} left the chat.&quot;</span>, <span class="stringliteral">&quot;#D60C0C&quot;</span>)</div>
 <div class="line"><span class="lineno">  310</span>                <span class="keywordflow">if</span> src <span class="keywordflow">in</span> local_peers:</div>
 <div class="line"><span class="lineno">  311</span>                    local_peers.remove(src)</div>
 <div class="line"><span class="lineno">  312</span>                config[<span class="stringliteral">&#39;peers&#39;</span>][:] = [p <span class="keywordflow">for</span> p <span class="keywordflow">in</span> config[<span class="stringliteral">&#39;peers&#39;</span>] <span class="keywordflow">if</span> p[0] != src]</div>
 <div class="line"><span class="lineno">  313</span> </div>
-<div class="line"><span class="lineno">  314</span>    append(f<span class="stringliteral">&quot;👋 Welcome, {handle}!&quot;</span>, <span class="stringliteral">&quot;#000000&quot;</span>)</div>
+<div class="line"><span class="lineno">  314</span>    append(f<span class="stringliteral">&quot;Welcome, {handle}!&quot;</span>, <span class="stringliteral">&quot;#000000&quot;</span>)</div>
 <div class="line"><span class="lineno">  315</span> </div>
 <div class="line"><span class="lineno">  316</span>    </div>
 <div class="line"><span class="lineno">  319</span>    <span class="keyword">def </span>on_close_event(event):</div>

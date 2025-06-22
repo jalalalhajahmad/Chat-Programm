@@ -306,12 +306,12 @@ def gui_process(config, to_network, from_network):
                 if src in already_left:
                     return
                 already_left.add(src)
-                append(f"⚠️ {src} left the chat.", "#D60C0C")
+                append(f"WARNING {src} left the chat.", "#D60C0C")
                 if src in local_peers:
                     local_peers.remove(src)
                 config['peers'][:] = [p for p in config['peers'] if p[0] != src]
 
-    append(f"👋 Welcome, {handle}!", "#000000")
+    append(f"Welcome, {handle}!", "#000000")
 
     ##
     # @brief Triggered on window close event – clean exit handler.
